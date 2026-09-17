@@ -1,0 +1,367 @@
+/*
+ * Only loaded by the SDK/EHIC subsite (sdk-ehic-landing.html/sdk-ehic-
+ * offer.html) - a self-contained stylesheet, deliberately NOT layered on
+ * top of main.css (this app's own dark issuer theme), so nothing from that
+ * theme bleeds into this one and vice versa.
+ *
+ * A modern, mobile-first design of its own - NOT a fidelity clone of
+ * eudi_web_login's own SDK-Kundenportal reskin (that app's flat/square/
+ * uppercase look is a deliberate homage to a specific real site; this
+ * subsite only needs to feel like "the same company", not "the same
+ * pixels"). What carries the SDK identity here is just the logo (see
+ * fragments/sdk-chrome.html) and the two brand colors below - everything
+ * else (spacing, cards, radii, type scale) is this subsite's own,
+ * unapologetically ordinary "modern product UI" language: soft shadows,
+ * rounded corners, generous whitespace, one accent color used sparingly.
+ *
+ * Written mobile-first throughout: every base rule below is the phone-
+ * width layout, and the one @media (min-width: 700px) block at the bottom
+ * only adds room/rearranges - it never has to fight a desktop assumption
+ * baked into the base rules the way a max-width retrofit would.
+ *
+ * Font: reuses this app's own self-hosted Inter (see main.css's identical
+ * @font-face - same two files, just also declared here since this
+ * stylesheet is deliberately standalone) rather than introducing a second
+ * typeface just for this subsite.
+ */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/pid-issuer/public/fonts/inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/pid-issuer/public/fonts/inter-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #10192b;
+  --muted: #5b6474;
+  --border: #e3e8f0;
+  --accent: #0066B3;
+  --accent-dark: #005CA9;
+  --accent-tint: #e8f1fa;
+  --shadow: 0 1px 2px rgba(16, 25, 43, 0.04), 0 8px 24px rgba(16, 25, 43, 0.06);
+  --radius: 16px;
+}
+
+.sdk-ehic { box-sizing: border-box; }
+.sdk-ehic *, .sdk-ehic *::before, .sdk-ehic *::after { box-sizing: inherit; }
+
+body.sdk-ehic {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- disclaimer banner ---------- */
+/* Same unmissable, full-width bar as eudi_web_login's own .demo-banner (see
+   that app's style.css) - identical colors/border/layout, on purpose: both
+   apps are making the same claim ("this is a demo, not SDK's real site"),
+   so they should look like the same warning, not two different ones. */
+.sdk-banner {
+  background: #fdf3d7;
+  color: #7a5b00;
+  border-bottom: 1px solid #f0d28a;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 10px 16px;
+}
+
+/* ---------- header ---------- */
+/* Just the brand mark - no role/demo pill badges (the banner above already
+   says this is a demo; a second and third marker for the same fact was
+   redundant), matching how plain the client site's own header is. */
+.sdk-nav {
+  display: flex;
+  align-items: center;
+  padding: 16px 16px 12px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+.sdk-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+  min-width: 0;
+}
+.sdk-logo { height: 30px; width: auto; display: block; flex-shrink: 0; }
+.sdk-brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Same embedded-in-dashboard handling as the rest of this app (see
+   public/js/embed-detect.js) - just the brand name shrinks away for space,
+   same as the client site's own embedded header. The disclaimer banner
+   above is deliberately NOT hidden here (unlike the header) - same "never
+   hide the demo disclaimer, even embedded" rule eudi_web_login's own
+   style.css states explicitly for its .demo-banner, and the actual likely
+   reason this went unnoticed: this subsite is exactly what the dashboard's
+   Issuer card/iframe now points at (see demo-up.sh's DASHBOARD_ISSUER_PATH),
+   so hiding it there was hiding it from the demo's own primary way of
+   viewing this page. */
+html.is-embedded .sdk-nav { padding: 10px 16px; }
+html.is-embedded .sdk-brand-name { display: none; }
+
+/* ---------- layout shell ---------- */
+.sdk-main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.sdk-main--narrow { max-width: 480px; }
+
+/* ---------- hero ---------- */
+.sdk-hero {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.sdk-hero-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--accent-tint);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sdk-hero h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--text);
+}
+.sdk-hero p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 46ch;
+}
+.sdk-hero form { width: 100%; margin-top: 4px; }
+.sdk-hero-note { font-size: 12.5px !important; color: var(--muted); }
+
+/* ---------- buttons ---------- */
+.sdk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 12px;
+  padding: 0 22px;
+  height: 50px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 80ms ease, box-shadow 80ms ease, background 120ms ease;
+}
+.sdk-btn--primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0, 102, 179, 0.28);
+}
+.sdk-btn--primary:hover { background: var(--accent-dark); }
+.sdk-btn--primary:active { transform: translateY(1px); }
+.sdk-btn--block { display: flex; width: 100%; }
+
+.sdk-link {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+}
+.sdk-link:hover { text-decoration: underline; }
+
+/* ---------- feature / info cards ---------- */
+.sdk-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sdk-feature {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.sdk-feature-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-tint);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sdk-feature h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.sdk-feature p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.sdk-feature .sdk-link { display: inline-block; margin-top: 8px; }
+
+/* ---------- QR / offer card ---------- */
+.sdk-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.sdk-card h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.sdk-card > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.sdk-qr-wrap {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  display: inline-flex;
+}
+.sdk-qr { width: 190px; height: 190px; display: block; }
+.sdk-card form,
+.sdk-card > .sdk-btn { width: 100%; }
+
+.sdk-reveal { width: 100%; text-align: left; }
+.sdk-reveal summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.sdk-reveal[open] summary { margin-bottom: 8px; }
+
+/* The hero's optional "enter your own details" disclosure (sdk-ehic-
+   landing.html) - same .sdk-reveal disclosure look as the offer page's
+   "copy the link" one, just holding real inputs instead of a code block. */
+.sdk-optional-details { margin-top: 6px; text-align: center; }
+.sdk-optional-details summary { display: inline-block; }
+.sdk-optional-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  text-align: left;
+}
+.sdk-field { display: flex; flex-direction: column; gap: 4px; }
+.sdk-field label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.sdk-field input {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+}
+.sdk-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+}
+.sdk-deep-link {
+  display: block;
+  word-break: break-all;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 12px;
+}
+
+.sdk-back { margin: 0; font-size: 13.5px; }
+.sdk-back a { color: var(--muted); text-decoration: none; }
+.sdk-back a:hover { color: var(--accent); }
+
+/* ---------- footer ---------- */
+.sdk-footer {
+  padding: 20px 16px 28px;
+  text-align: center;
+}
+.sdk-footer p {
+  margin: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---------- wider screens (mobile-first: this only ADDS room) ---------- */
+@media (min-width: 700px) {
+  .sdk-nav { padding: 24px 24px 16px; }
+  .sdk-main { padding: 16px 24px 64px; gap: 32px; }
+  .sdk-hero { padding: 44px 48px; }
+  .sdk-hero h1 { font-size: 30px; }
+  .sdk-hero p { font-size: 16px; }
+  .sdk-card { padding: 40px 48px; }
+  .sdk-features { flex-direction: row; }
+  .sdk-feature { flex: 1 1 0; }
+  .sdk-optional-fields { grid-template-columns: 1fr 1fr; }
+}

@@ -130,6 +130,37 @@ html.is-embedded .site-header {
     background: var(--accent);
 }
 
+/* Only rendered in DEMO_BRAND=sdk (see fragments/header.html) - keeps the
+   original TRUSTEQ identity visible, just demoted to small print next to
+   the now-prominent SDK brand mark, rather than hidden outright. */
+.demo-platform-note {
+    color: var(--muted);
+    font-size: 12px;
+    margin-left: 0.25rem;
+}
+
+/* Only added in DEMO_BRAND=sdk (see generate-credentials-offer-form.js) -
+   makes the EHIC card visually stand out as the recommended default among
+   its peers, without changing the grid layout any other card uses. */
+.credential-card.featured {
+    border-color: var(--accent);
+    position: relative;
+}
+
+.credential-card-badge {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
 .bg-secondary-subtle {
     background-color: var(--card) !important;
     border: 1px solid var(--border);

@@ -18,6 +18,7 @@ package eu.europa.ec.eudi.pidissuer.adapter.input.web
 import arrow.core.raise.effect
 import arrow.core.raise.fold
 import com.eygraber.uri.Uri
+import eu.europa.ec.eudi.pidissuer.DemoBrandProperties
 import eu.europa.ec.eudi.pidissuer.adapter.out.attestation.arbeitsvertrag.ArbeitsvertragMsoMdocConfigurationId
 import eu.europa.ec.eudi.pidissuer.adapter.out.attestation.arbeitsvertrag.IssueSdJwtVcArbeitsvertrag
 import eu.europa.ec.eudi.pidissuer.adapter.out.attestation.ehic.IssueEhic
@@ -88,15 +89,20 @@ class IssuerUi(
     private val metadata: CredentialIssuerMetaData,
     private val createCredentialsOffer: CreateCredentialsOffer,
     private val generateQrCode: GenerateQqCode,
+    private val demoBrand: DemoBrandProperties,
 ) {
     val router: RouterFunction<ServerResponse> =
         coRouter {
-            // Redirect / to 'generate credentials offer' form
+            // Redirect / to the SDK/EHIC subsite in DEMO_BRAND=sdk (the demo's
+            // own front door - see the top-level plan), or to the generic
+            // 'generate credentials offer' form in neutral mode, unchanged from
+            // before this subsite existed.
             (GET("") or GET("/")) {
-                log.info("Redirecting to {}", GENERATE_CREDENTIALS_OFFER)
+                val target = if (demoBrand.sdk) SDK_EHIC_LANDING else GENERATE_CREDENTIALS_OFFER
+                log.info("Redirecting to {}", target)
                 ServerResponse
                     .status(HttpStatus.TEMPORARY_REDIRECT)
-                    .renderAndAwait("redirect:$GENERATE_CREDENTIALS_OFFER")
+                    .renderAndAwait("redirect:$target")
             }
 
             // Display 'generate credentials offer' form
@@ -110,6 +116,24 @@ class IssuerUi(
                 GENERATE_CREDENTIALS_OFFER,
                 contentType(MediaType.APPLICATION_FORM_URLENCODED) and accept(MediaType.TEXT_HTML),
                 ::handleGenerateCredentialsOffer,
+            )
+
+            // SDK/EHIC subsite (DEMO_BRAND=sdk) - a dedicated, SDK-Kundenportal-
+            // styled flow for issuing just the Health Insurance Card, reusing
+            // the exact same createCredentialsOffer use case as the generic
+            // form above with a hardcoded credential id and pre-authorized_code
+            // grant - see sdk-ehic-landing.html/sdk-ehic-offer.html. Reachable
+            // regardless of DEMO_BRAND (nothing about the route itself depends
+            // on it), just not the default landing page in neutral mode.
+            GET(
+                SDK_EHIC_LANDING,
+                contentType(MediaType.ALL) and accept(MediaType.TEXT_HTML),
+            ) { handleDisplaySdkEhicLanding() }
+
+            POST(
+                SDK_EHIC_GENERATE,
+                contentType(MediaType.APPLICATION_FORM_URLENCODED) and accept(MediaType.TEXT_HTML),
+                ::handleGenerateSdkEhicOffer,
             )
         }
 
@@ -157,6 +181,7 @@ class IssuerUi(
                     "credentialsOfferUri" to createCredentialsOffer.defaultCredentialOfferUri.toString(),
                     "openid4VciVersion" to OpenId4VciSpec.VERSION,
                     "usefulLinks" to usefulLinks,
+                    "brand" to demoBrand,
                 ),
             )
     }
@@ -168,11 +193,64 @@ class IssuerUi(
             createCredentialsOffer(createCredentialOfferRequest)
         }.fold(
             transform = { credentialsOfferUri ->
-                context(generateQrCode) { credentialsOfferUri.credentialOfferSuccessResponse() }
+                context(generateQrCode) { credentialsOfferUri.credentialOfferSuccessResponse(demoBrand) }
             },
             recover = { error ->
                 log.warn("Unable to generated Credentials Offer. Error: {}", error)
-                error.credentialOfferErrorResponse()
+                error.credentialOfferErrorResponse(demoBrand)
+            },
+        )
+
+    private suspend fun handleDisplaySdkEhicLanding(): ServerResponse {
+        log.info("Displaying SDK/EHIC subsite landing page")
+        return ServerResponse
+            .ok()
+            .contentType(MediaType.TEXT_HTML)
+            .renderAndAwait("sdk-ehic-landing", mapOf("brand" to demoBrand))
+    }
+
+    // Same createCredentialsOffer use case the generic form's
+    // handleGenerateCredentialsOffer() above drives, just with a hardcoded
+    // credential id (EHIC) and pre-authorized_code grant instead of a
+    // full form - this subsite's whole point is "one click, no form" by
+    // default. The one thing still read from the request is the optional
+    // "enter your own details" disclosure on sdk-ehic-landing.html - same
+    // ehic_* field names/semantics as the generic form's own EHIC fieldset
+    // (see createCredentialOfferRequest() below), so this demo issuer's
+    // auto-generated sample data is used for whichever fields are left
+    // blank, exactly like the generic form's own behaviour.
+    private suspend fun handleGenerateSdkEhicOffer(request: ServerRequest): ServerResponse =
+        effect {
+            log.debug("Generating SDK/EHIC Credentials Offer")
+            val formData = request.awaitFormData()
+            val ehicFields = listOf("family_name", "given_name", "birth_date", "personal_administrative_number")
+            val enteredFields =
+                ehicFields.mapNotNull { field ->
+                    formData["ehic_$field"]?.firstOrNull { it.isNotBlank() }?.let { field to it }
+                }
+            val customData =
+                if (enteredFields.isEmpty()) {
+                    emptyMap()
+                } else {
+                    mapOf(
+                        IssueEhic.CONFIGURATION_ID to
+                            buildJsonObject { enteredFields.forEach { (field, value) -> put(field, value) } },
+                    )
+                }
+            createCredentialsOffer(
+                CreateCredentialsOffer.Request(
+                    credentialConfigurationIds = setOf(IssueEhic.CONFIGURATION_ID),
+                    preAuthorizedCode = true,
+                    customData = customData,
+                ),
+            )
+        }.fold(
+            transform = { credentialsOfferUri ->
+                context(generateQrCode) { credentialsOfferUri.sdkEhicOfferSuccessResponse(demoBrand) }
+            },
+            recover = { error ->
+                log.warn("Unable to generate SDK/EHIC Credentials Offer. Error: {}", error)
+                error.credentialOfferErrorResponse(demoBrand)
             },
         )
 
@@ -217,6 +295,8 @@ class IssuerUi(
 
     companion object {
         const val GENERATE_CREDENTIALS_OFFER: String = "/issuer/credentialsOffer/generate"
+        const val SDK_EHIC_LANDING: String = "/issuer/sdk/ehic"
+        const val SDK_EHIC_GENERATE: String = "/issuer/sdk/ehic/generate"
         private val log = LoggerFactory.getLogger(IssuerUi::class.java)
     }
 }
@@ -284,7 +364,7 @@ private suspend fun ServerRequest.createCredentialOfferRequest(): CreateCredenti
 }
 
 context(generateQrCode: GenerateQqCode)
-private suspend fun Uri.credentialOfferSuccessResponse(): ServerResponse {
+private suspend fun Uri.credentialOfferSuccessResponse(demoBrand: DemoBrandProperties): ServerResponse {
     val uri = this@credentialOfferSuccessResponse
     val qrCode = generateQrCode(uri, Format.PNG, Dimensions(Pixels(300u), Pixels(300u)))
     return ServerResponse
@@ -297,11 +377,34 @@ private suspend fun Uri.credentialOfferSuccessResponse(): ServerResponse {
                 "qrCode" to Base64.encode(qrCode),
                 "qrCodeMediaType" to "image/png",
                 "openid4VciVersion" to OpenId4VciSpec.VERSION,
+                "brand" to demoBrand,
             ),
         )
 }
 
-private suspend fun CreateCredentialsOffer.Error.credentialOfferErrorResponse(): ServerResponse =
+// Same shape as credentialOfferSuccessResponse() above, just rendering the
+// SDK/EHIC subsite's own reskinned QR-display template instead of the
+// generic issuer's - see sdk-ehic-offer.html/public/css/sdk-theme.css.
+context(generateQrCode: GenerateQqCode)
+private suspend fun Uri.sdkEhicOfferSuccessResponse(demoBrand: DemoBrandProperties): ServerResponse {
+    val uri = this@sdkEhicOfferSuccessResponse
+    val qrCode = generateQrCode(uri, Format.PNG, Dimensions(Pixels(300u), Pixels(300u)))
+    return ServerResponse
+        .ok()
+        .contentType(MediaType.TEXT_HTML)
+        .renderAndAwait(
+            "sdk-ehic-offer",
+            mapOf(
+                "uri" to uri.toString(),
+                "qrCode" to Base64.encode(qrCode),
+                "qrCodeMediaType" to "image/png",
+                "openid4VciVersion" to OpenId4VciSpec.VERSION,
+                "brand" to demoBrand,
+            ),
+        )
+}
+
+private suspend fun CreateCredentialsOffer.Error.credentialOfferErrorResponse(demoBrand: DemoBrandProperties): ServerResponse =
     ServerResponse
         .badRequest()
         .contentType(MediaType.TEXT_HTML)
@@ -310,5 +413,6 @@ private suspend fun CreateCredentialsOffer.Error.credentialOfferErrorResponse():
             mapOf(
                 "error" to this::class.java.canonicalName,
                 "openid4VciVersion" to OpenId4VciSpec.VERSION,
+                "brand" to demoBrand,
             ),
         )

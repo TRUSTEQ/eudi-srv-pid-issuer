@@ -1,0 +1,40 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--/* Shared header/footer chrome for the SDK/EHIC subsite (sdk-ehic-landing.html/
+       sdk-ehic-offer.html). Modern, mobile-first, and deliberately its own look
+       (see public/css/sdk-theme.css's header comment) rather than a fidelity
+       clone of eudi_web_login's own SDK-Kundenportal reskin - what carries the
+       SDK identity here is just the logo + the two brand colors, not the exact
+       page structure. No light/dark toggle, no decorative social-icon row -
+       this subsite is a single-purpose "get your card" flow, kept deliberately
+       plain outside of that. */-->
+<div th:fragment="sdkHeader">
+    <!--/* Same unmissable, full-width disclaimer bar as eudi_web_login's own
+           .demo-banner (see that file's style.css) - same colors/border/
+           layout, reused here rather than reinvented, since both apps are
+           making the identical claim ("this is a demo, not SDK's real
+           site"). No role/demo pill badges in the header below (dropped -
+           the banner here already says it, a second/third marker was
+           redundant) - just the brand mark, matching how plain the client
+           site's own header is. */-->
+    <div class="sdk-banner">
+        <span th:utext="#{sdk-ehic-demo-banner-html}">
+            <strong>Demo</strong> - not SDK's real site.
+        </span>
+    </div>
+    <header class="sdk-nav">
+        <a th:href="@{/issuer/sdk/ehic}" class="sdk-brand">
+            <img class="sdk-logo" th:src="@{/public/img/sdk-logo.svg}" alt=""/>
+            <span class="sdk-brand-name" th:text="#{sdk-ehic-brand-name}">Süddeutsche Krankenkasse</span>
+        </a>
+    </header>
+</div>
+
+<footer class="sdk-footer" th:fragment="sdkFooter">
+    <p th:text="#{sdk-ehic-footer-disclaimer}">
+        EUDI Wallet demo - not affiliated with or endorsed by Süddeutsche Krankenkasse
+    </p>
+</footer>
+</body>
+</html>

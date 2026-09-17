@@ -428,7 +428,7 @@ internal class AppBeans :
                     .mapValues { it.value.resource }
             val metaDataApi = MetaDataApi(bean(), bean(), typeMetadata, bean(), bean())
             val walletApi = WalletApi(bean(), bean(), bean(), bean())
-            val issuerUi = IssuerUi(bean(), bean(), bean())
+            val issuerUi = IssuerUi(bean(), bean(), bean(), bean())
             val issuerApi = IssuerApi(bean())
             val tokenApi = TokenApi(bean(), bean())
             metaDataApi.route

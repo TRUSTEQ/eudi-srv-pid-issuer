@@ -3,6 +3,17 @@
         const generateButton = document.getElementById("generateButton");
         const grid = document.getElementById("credential-card-grid");
         const preAuthorizedCode = document.getElementById("preAuthorizedCode");
+
+        // DEMO_BRAND=sdk (see DemoBrandProperties/generate-credentials-offer-form.html):
+        // the Health Insurance Card (EHIC) becomes the demo's lead credential -
+        // shown first, visually featured, and pre-selected so the default path
+        // through this page is "load, EHIC is already picked, click Generate."
+        // Unset (data-demo-brand-sdk="false") in neutral mode, where every
+        // credential stays an equal, unselected peer exactly as before.
+        const demoBrandSdk = grid.dataset.demoBrandSdk === "true";
+        const featuredBadgeText = grid.dataset.featuredBadgeText || "";
+        const EHIC_CONFIG_ID = "urn:eudi:ehic:1:dc+sd-jwt-compact";
+        let ehicCardController = null;
         const customDataFields = Array.from(document.querySelectorAll(".custom-data-fields"));
         const customDataInputs = customDataFields.flatMap(fieldset => Array.from(fieldset.querySelectorAll("input")));
 
@@ -93,12 +104,15 @@
         flatGroups.forEach((items, key) => {
             const nonDeferred = items.filter(i => !DEFERRED_SUFFIX_PATTERN.test(i.rawLabel) && !/\(deferred\)$/.test(i.rawLabel));
             const preferred = nonDeferred.find(i => /SD-JWT/i.test(i.rawLabel)) || nonDeferred[0] || items[0];
-            registerCard(
+            const cardController = registerCard(
                 makeCardElement(key, preferred.cb.dataset.category),
                 preferred.cb.dataset.category,
                 [preferred.cb],
                 items.map(i => i.cb),
             );
+            if (items.some(i => i.cb.dataset.configId === EHIC_CONFIG_ID)) {
+                ehicCardController = cardController;
+            }
         });
 
         // --- Family rows (name="credentialFamilies", e.g. Schufa/Employment Certificate):
@@ -139,6 +153,19 @@
                     (Boolean(fieldset.dataset.family) && checkedFamilyKeys.has(fieldset.dataset.family));
                 fieldset.style.display = matches ? "" : "none";
             });
+        }
+
+        // Lead with EHIC, featured and pre-selected - see the demoBrandSdk comment above.
+        if (demoBrandSdk && ehicCardController) {
+            grid.insertBefore(ehicCardController.el, grid.firstChild);
+            ehicCardController.el.classList.add("featured");
+            if (featuredBadgeText) {
+                const badge = document.createElement("span");
+                badge.className = "credential-card-badge";
+                badge.textContent = featuredBadgeText;
+                ehicCardController.el.appendChild(badge);
+            }
+            selectCard(ehicCardController);
         }
 
         onSelectionChanged();

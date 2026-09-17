@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/public/css/sdk-theme.css}">
+    <!-- Blocking (no defer/async) and in <head>, ahead of <body>, so the
+         is-embedded class it may set lands before the header below ever
+         paints - see public/js/embed-detect.js (same script the rest of
+         this app already uses for the same reason). -->
+    <script th:src="@{/public/js/embed-detect.js}"></script>
+    <title th:text="#{sdk-ehic-brand-name} + ' ' + #{sdk-ehic-title-suffix}">Süddeutsche Krankenkasse (EUDI Wallet Demo)</title>
+</head>
+<body class="sdk-ehic">
+<div th:replace="~{fragments/sdk-chrome :: sdkHeader}"></div>
+<main class="sdk-main">
+    <!--/* One card, one action: the whole point of this subsite is "no form to
+           fill in" - see public/css/sdk-theme.css's header comment for why this
+           is a modern card-based layout of its own rather than a clone of
+           eudi_web_login's period-accurate SDK-Kundenportal homage. */-->
+    <section class="sdk-hero">
+        <span class="sdk-hero-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 9.5h20"/><path d="M6 14h4"/></svg>
+        </span>
+        <h1 th:text="#{sdk-ehic-hero-heading}">Your Health Insurance Card. Digital.</h1>
+        <p th:text="#{sdk-ehic-left-body}">Get your digital EHIC issued straight to your EUDI Wallet.</p>
+        <form method="post" th:action="@{/issuer/sdk/ehic/generate}">
+            <button type="submit" class="sdk-btn sdk-btn--primary sdk-btn--block" th:text="#{sdk-ehic-primary-btn}">Get your card now</button>
+
+            <!--/* Optional, collapsed by default: this subsite's whole pitch is
+                   "one click, no form" (see IssuerUi.kt's handleGenerateSdkEhicOffer())
+                   - typing in real-ish demo data is an escape hatch for anyone who
+                   wants it, not the default path. Same ehic_* field names/labels as
+                   the generic form's own EHIC fieldset (generate-credentials-offer-
+                   form.html), reused rather than duplicated. */-->
+            <details class="sdk-reveal sdk-optional-details">
+                <summary th:text="#{sdk-ehic-custom-data-summary}">Enter your own details (optional)</summary>
+                <div class="sdk-optional-fields">
+                    <div class="sdk-field">
+                        <label for="ehic_given_name" th:text="#{field-given-name}">Given Name</label>
+                        <input type="text" name="ehic_given_name" id="ehic_given_name" autocomplete="given-name">
+                    </div>
+                    <div class="sdk-field">
+                        <label for="ehic_family_name" th:text="#{field-family-name}">Family Name</label>
+                        <input type="text" name="ehic_family_name" id="ehic_family_name" autocomplete="family-name">
+                    </div>
+                    <div class="sdk-field">
+                        <label for="ehic_birth_date" th:text="#{field-date-of-birth}">Date of Birth</label>
+                        <input type="date" name="ehic_birth_date" id="ehic_birth_date" autocomplete="bday">
+                    </div>
+                    <div class="sdk-field">
+                        <label for="ehic_personal_administrative_number" th:text="#{field-health-insurance-number}">Health Insurance Number</label>
+                        <input type="text" name="ehic_personal_administrative_number" id="ehic_personal_administrative_number">
+                    </div>
+                </div>
+            </details>
+        </form>
+        <p class="sdk-hero-note" th:text="#{sdk-ehic-left-note}">No real ID is needed for this demo.</p>
+    </section>
+
+    <section class="sdk-features">
+        <div class="sdk-feature">
+            <span class="sdk-feature-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h4V4M20 9h-4V4M4 15h4v5M20 15h-4v5"/></svg>
+            </span>
+            <div>
+                <h2 th:text="#{sdk-ehic-right-heading1}">Already have an EUDI Wallet?</h2>
+                <p th:text="#{sdk-ehic-right-body1}">Scan the QR code on the next screen.</p>
+            </div>
+        </div>
+        <div class="sdk-feature">
+            <span class="sdk-feature-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>
+            </span>
+            <div>
+                <h2 th:text="#{sdk-ehic-right-heading2}">Need a different credential?</h2>
+                <p th:text="#{sdk-ehic-right-body2}">This demo issuer can also issue other credentials.</p>
+                <a class="sdk-link" th:href="@{/issuer/credentialsOffer/generate}" th:text="#{sdk-ehic-all-credentials-btn} + ' →'">Show all credential types →</a>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/sdk-chrome :: sdkFooter}"></div>
+</body>
+</html>

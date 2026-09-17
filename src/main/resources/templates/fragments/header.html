@@ -8,16 +8,28 @@
        as the page body below it. One Thymeleaf fragment instead of
        copy-pasting this markup into each of the three templates that
        th:replace it. */-->
+<!--/* DEMO_BRAND=sdk (see demo.brand.mode/DemoBrandProperties, wired in through
+       IssuerUi.kt's 3 template models) swaps the brand mark to SDK's own logo
+       and overrides main.css's --accent/--accent-dark to SDK's palette -
+       exactly the "swappable branding" recipe eudi_web_login/eudi_web_wallet
+       already use, applied here via Thymeleaf instead of a branding.json
+       since this app has no such file today. The original TRUSTEQ identity is
+       kept, just demoted to the small "Demo platform" line - same pattern the
+       client-site app itself uses to never hide that this is a demo. */-->
 <header th:fragment="header" class="site-header">
     <div class="container px-4">
         <div class="brand">
             <img class="brand-logo"
-                 th:src="@{/public/img/trusteq-logo.png}"
+                 th:src="${brand != null and brand.sdk} ? @{/public/img/sdk-logo.svg} : @{/public/img/trusteq-logo.png}"
                  alt="TRUSTEQ - EUDI Demo Wallet"
-                 th:alt="#{eudiw}"/>
+                 th:alt="${brand != null and brand.sdk} ? #{brand-name-sdk} : #{eudiw}"/>
             <span class="role-badge" th:text="#{role-badge-issuer}">Issuer</span>
+            <span class="demo-platform-note" th:if="${brand != null and brand.sdk}" th:text="#{demo-platform-note}">Demo platform by TRUSTEQ</span>
         </div>
     </div>
+    <style th:if="${brand != null and brand.sdk}">
+        :root { --accent: #0066B3; --accent-dark: #005CA9; }
+    </style>
 </header>
 </body>
 </html>

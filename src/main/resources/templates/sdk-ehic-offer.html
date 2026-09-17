@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/public/css/sdk-theme.css}">
+    <script th:src="@{/public/js/embed-detect.js}"></script>
+    <title th:text="#{sdk-ehic-brand-name} + ' ' + #{sdk-ehic-title-suffix}">Süddeutsche Krankenkasse (EUDI Wallet Demo)</title>
+</head>
+<body class="sdk-ehic">
+<div th:replace="~{fragments/sdk-chrome :: sdkHeader}"></div>
+<main class="sdk-main sdk-main--narrow">
+    <!--/*@thymesVar id="uri" type="kotlin.String"*/-->
+    <!--/*@thymesVar id="qrCode" type="kotlin.String"*/-->
+    <!--/*@thymesVar id="qrCodeMediaType" type="kotlin.String"*/-->
+    <!--/* Same single, focused card as the landing page - QR code, a direct
+           wallet deep-link button (works when the wallet app is registered on
+           this same device), the raw link behind a disclosure for anyone who'd
+           rather copy it. No status polling here: this is the ISSUER side of
+           the flow, with no way of knowing when a wallet elsewhere finishes
+           fetching the credential - unlike the client site's own waiting page,
+           which really is waiting on a result. */-->
+    <section class="sdk-card">
+        <h1 th:text="#{sdk-ehic-offer-hero-heading}">Scan &amp; receive your card</h1>
+        <p th:text="#{sdk-ehic-offer-intro}">Scan the QR code with your EUDI Wallet app.</p>
+
+        <div class="sdk-qr-wrap">
+            <img class="sdk-qr" th:src="'data:' + ${qrCodeMediaType} + ';base64,' + ${qrCode}" alt="" th:alt="#{qr-code}"/>
+        </div>
+
+        <a class="sdk-btn sdk-btn--primary sdk-btn--block" href="" th:href="${uri}" th:text="#{sdk-ehic-open-wallet-btn}">Open with wallet</a>
+
+        <details class="sdk-reveal">
+            <summary th:text="#{sdk-ehic-copy-link-summary}">Or copy the link below</summary>
+            <code class="sdk-deep-link" th:text="${uri}">https://example.org</code>
+        </details>
+
+        <p class="sdk-back">
+            <a th:href="@{/issuer/sdk/ehic}" th:text="'← ' + #{sdk-ehic-back-link}">← Back</a>
+        </p>
+    </section>
+</main>
+<div th:replace="~{fragments/sdk-chrome :: sdkFooter}"></div>
+</body>
+</html>
