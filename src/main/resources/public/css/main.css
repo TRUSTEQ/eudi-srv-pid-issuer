@@ -326,3 +326,28 @@ code {
 .advanced-section[open] summary {
     margin-bottom: 0.75rem;
 }
+
+/* Click-to-enlarge for any QR code on the page (.qr-zoom-target - see
+   public/js/qr-zoom.js) - easier scanning from across a room during a
+   live demo than the inline size ever allows. */
+.qr-zoom-target { cursor: zoom-in; }
+.qr-zoom-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9998;
+    cursor: zoom-out;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+.qr-zoom-backdrop.open { display: flex; }
+.qr-zoom-backdrop img {
+    width: min(85vmin, 480px);
+    height: min(85vmin, 480px);
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}

@@ -25,7 +25,7 @@
         <p th:text="#{sdk-ehic-offer-intro}">Scan the QR code with your EUDI Wallet app.</p>
 
         <div class="sdk-qr-wrap">
-            <img class="sdk-qr" th:src="'data:' + ${qrCodeMediaType} + ';base64,' + ${qrCode}" alt="" th:alt="#{qr-code}"/>
+            <img class="sdk-qr qr-zoom-target" th:src="'data:' + ${qrCodeMediaType} + ';base64,' + ${qrCode}" alt="" th:alt="#{qr-code}"/>
         </div>
 
         <a class="sdk-btn sdk-btn--primary sdk-btn--block" href="" th:href="${uri}" th:text="#{sdk-ehic-open-wallet-btn}">Open with wallet</a>
@@ -41,5 +41,6 @@
     </section>
 </main>
 <div th:replace="~{fragments/sdk-chrome :: sdkFooter}"></div>
+<script th:src="@{/public/js/qr-zoom.js}"></script>
 </body>
 </html>
