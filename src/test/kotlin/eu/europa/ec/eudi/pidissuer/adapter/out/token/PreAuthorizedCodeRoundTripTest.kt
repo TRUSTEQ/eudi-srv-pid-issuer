@@ -115,14 +115,16 @@ internal class PreAuthorizedCodeRoundTripTest {
                     scopes = nonEmptySetOf(Scope("eu.europa.ec.eudi.pid_mso_mdoc")),
                     dpopJwkThumbprint =
                         com.nimbusds.oauth2.sdk.dpop.JWKThumbprintConfirmation(
-                            com.nimbusds.jose.util.Base64URL.encode("thumbprint"),
+                            com.nimbusds.jose.util.Base64URL
+                                .encode("thumbprint"),
                         ),
                     clientStatus =
                         eu.europa.ec.eudi.pidissuer.domain.ClientStatus(
                             status =
                                 eu.europa.ec.eudi.pidissuer.domain.StatusClaim(
                                     eu.europa.ec.eudi.pidissuer.domain.StatusListToken(
-                                        com.eygraber.uri.Uri.parse("urn:test:no-status"),
+                                        com.eygraber.uri.Uri
+                                            .parse("urn:test:no-status"),
                                         0u,
                                     ),
                                 ),

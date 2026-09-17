@@ -118,9 +118,11 @@ private suspend fun tokenErrorResponse(
 
 private suspend fun IssuePreAuthorizedCodeAccessToken.Error.tokenErrorResponse(): ServerResponse =
     when (this) {
-        IssuePreAuthorizedCodeAccessToken.Error.UnsupportedGrantType ->
+        IssuePreAuthorizedCodeAccessToken.Error.UnsupportedGrantType -> {
             tokenErrorResponse("unsupported_grant_type")
+        }
 
-        IssuePreAuthorizedCodeAccessToken.Error.InvalidGrant ->
+        IssuePreAuthorizedCodeAccessToken.Error.InvalidGrant -> {
             tokenErrorResponse("invalid_grant")
+        }
     }

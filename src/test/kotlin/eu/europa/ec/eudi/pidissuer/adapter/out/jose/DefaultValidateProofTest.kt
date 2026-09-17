@@ -119,6 +119,12 @@ class DefaultValidateProofTest {
                 validateAttestationProof = ValidateAttestationProof(verifyKeyAttestation),
                 verifyNonce = { _, _ -> true },
             )
+        val configuration = configuration(policy)
+
+        return context(configuration) {
+            either { validator(unvalidatedProof, clock.now()) } getOrElse { fail("Expected success but got $it") }
+        }
+    }
 
     private fun configuration(policy: CredentialReusePolicy) =
         pidMsoMdocV1(

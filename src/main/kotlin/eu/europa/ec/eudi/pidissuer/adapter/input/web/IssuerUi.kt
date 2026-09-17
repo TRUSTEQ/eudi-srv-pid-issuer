@@ -307,7 +307,10 @@ private suspend fun ServerRequest.createCredentialOfferRequest(): CreateCredenti
     val credentialsOfferUri = formData["credentialsOfferUri"]?.firstOrNull { it.isNotBlank() }
     val preAuthorizedCode = formData["preAuthorizedCode"].orEmpty().isNotEmpty()
 
-    fun customDataFrom(formPrefix: String, fields: List<String>): JsonObject? {
+    fun customDataFrom(
+        formPrefix: String,
+        fields: List<String>,
+    ): JsonObject? {
         val entries =
             fields.mapNotNull { field ->
                 formData["${formPrefix}_$field"]?.firstOrNull { it.isNotBlank() }?.let { field to it }
@@ -323,7 +326,10 @@ private suspend fun ServerRequest.createCredentialOfferRequest(): CreateCredenti
     // its own copy of the same data, not just the "canonical" id.
     val customData =
         buildMap {
-            fun putForBaseAndDeferred(id: CredentialConfigurationId, data: JsonObject) {
+            fun putForBaseAndDeferred(
+                id: CredentialConfigurationId,
+                data: JsonObject,
+            ) {
                 put(id, data)
                 put(deferredId(id), data)
             }

@@ -103,12 +103,14 @@ internal class VerifyAndConsumePreAuthorizedCodeWithNimbus(
                         .toNonEmptySetOrNull()
                 requireNotNull(scopes) { "scope must not be empty" }
                 val customData =
-                    claimSet.getStringClaim("custom_data")?.let { raw ->
-                        jsonSupport
-                            .decodeFromString(JsonObject.serializer(), raw)
-                            .entries
-                            .associate { (id, data) -> CredentialConfigurationId(id) to data.jsonObject }
-                    }.orEmpty()
+                    claimSet
+                        .getStringClaim("custom_data")
+                        ?.let { raw ->
+                            jsonSupport
+                                .decodeFromString(JsonObject.serializer(), raw)
+                                .entries
+                                .associate { (id, data) -> CredentialConfigurationId(id) to data.jsonObject }
+                        }.orEmpty()
 
                 val firstUse = usedCodeChecker.markUsedIfNotAlready(jti, expiresAt, at)
                 if (firstUse) {
