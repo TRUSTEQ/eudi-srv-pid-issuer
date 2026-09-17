@@ -372,7 +372,7 @@ private suspend fun ServerRequest.createCredentialOfferRequest(): CreateCredenti
 context(generateQrCode: GenerateQqCode)
 private suspend fun Uri.credentialOfferSuccessResponse(demoBrand: DemoBrandProperties): ServerResponse {
     val uri = this@credentialOfferSuccessResponse
-    val qrCode = generateQrCode(uri, Format.PNG, Dimensions(Pixels(300u), Pixels(300u)))
+    val qrCode = generateQrCode(uri, Format.PNG, Dimensions(Pixels(640u), Pixels(640u)))
     return ServerResponse
         .ok()
         .contentType(MediaType.TEXT_HTML)
@@ -394,7 +394,7 @@ private suspend fun Uri.credentialOfferSuccessResponse(demoBrand: DemoBrandPrope
 context(generateQrCode: GenerateQqCode)
 private suspend fun Uri.sdkEhicOfferSuccessResponse(demoBrand: DemoBrandProperties): ServerResponse {
     val uri = this@sdkEhicOfferSuccessResponse
-    val qrCode = generateQrCode(uri, Format.PNG, Dimensions(Pixels(300u), Pixels(300u)))
+    val qrCode = generateQrCode(uri, Format.PNG, Dimensions(Pixels(640u), Pixels(640u)))
     return ServerResponse
         .ok()
         .contentType(MediaType.TEXT_HTML)
