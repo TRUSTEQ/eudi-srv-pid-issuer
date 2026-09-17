@@ -8,7 +8,10 @@ the [EUDI Wallet Reference Implementation project description](https://github.co
 > [!NOTE]
 > **This checkout is one piece of a larger local demo** - see the
 > [top-level README](../README.md) for how it fits together with the
-> verifier, wallet, and client-site apps. Two things below are specific to
+> verifier, wallet, and client-site apps, or
+> [`../docs/technical/components/issuer.md`](../docs/technical/components/issuer.md)
+> for a short summary of what's customized here vs. the upstream
+> reference implementation. Two things below are specific to
 > that demo setup and differ from a plain upstream checkout:
 > - **URLs**: this demo puts the whole stack behind a shared gateway, so
 >   every URL below that says `https://localhost/...` is actually reachable
