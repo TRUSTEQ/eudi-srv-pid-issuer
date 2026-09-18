@@ -509,17 +509,24 @@ html.is-embedded .sdk-brand-name { display: none; }
    its own comment for the one piece deliberately NOT reused, the light/
    dark .theme-toggle), and the disclaimer itself sits below the band, on
    the page background, same as the reference. */
-.sdk-footer { margin-top: 32px; }
+/* Every value below is copied straight from eudi_web_login's own
+   style.css (its base/desktop rule here, its @media (max-width:600px)
+   override there) rather than approximated - mobile-first order flipped
+   (our base = its mobile override, our min-width:700px block = its own
+   base/desktop rule) to fit this file's existing convention, but the
+   actual numbers at both ends are its, not invented for this subsite. */
+.sdk-footer { margin-top: 64px; }
 .sdk-footer-band {
   background: var(--footer-bg);
-  padding: 32px 16px 16px;
+  padding: 32px 16px 20px;
   text-align: center;
 }
 .sdk-footer-icons {
   display: flex;
   justify-content: center;
-  gap: 24px;
-  margin: 0 0 20px;
+  gap: 18px;
+  row-gap: 14px;
+  margin: 0 0 28px;
   padding: 0;
   list-style: none;
   flex-wrap: wrap;
@@ -530,31 +537,29 @@ html.is-embedded .sdk-brand-name { display: none; }
   align-items: center;
   gap: 6px;
   color: #b7c2d6;
-  font-size: 10.5px;
+  font-size: 11px;
 }
 .sdk-footer-icon svg { width: 20px; height: 20px; }
 .sdk-footer-legal {
-  max-width: 480px;
+  max-width: 900px;
   margin: 0 auto;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
-  font-size: 12px;
+  font-size: 13px;
   color: #b7c2d6;
 }
 .sdk-footer-build { color: #8b98b3; }
-.sdk-footer-links { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.sdk-footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
 .sdk-footer-links span { color: #b7c2d6; cursor: default; }
 .sdk-footer-disclaimer {
+  max-width: 900px;
   margin: 0 auto;
-  max-width: 480px;
-  padding: 20px 16px;
+  padding: 20px 24px 28px;
   text-align: center;
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -569,6 +574,9 @@ html.is-embedded .sdk-brand-name { display: none; }
   .sdk-card { padding: 40px 48px; }
   .sdk-features { flex-direction: row; }
   .sdk-feature { flex: 1 1 0; }
+  .sdk-footer-band { padding: 44px 24px 20px; }
+  .sdk-footer-icons { gap: 32px; row-gap: 0; }
+  .sdk-footer-legal { gap: 12px; }
 }
 
 /* Click-to-enlarge for any QR code on the page (.qr-zoom-target - see
