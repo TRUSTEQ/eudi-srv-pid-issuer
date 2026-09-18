@@ -2,13 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <!--/* Shared header/footer chrome for the SDK/EHIC subsite (sdk-ehic-landing.html/
-       sdk-ehic-offer.html). Modern, mobile-first, and deliberately its own look
-       (see public/css/sdk-theme.css's header comment) rather than a fidelity
-       clone of eudi_web_login's own SDK-Kundenportal reskin - what carries the
-       SDK identity here is just the logo + the two brand colors, not the exact
-       page structure. No light/dark toggle, no decorative social-icon row -
-       this subsite is a single-purpose "get your card" flow, kept deliberately
-       plain outside of that. */-->
+       sdk-ehic-offer.html).
+       EXPERIMENT (branch: sdk-visual-consistency): the header below now
+       mirrors eudi_web_login's own two-band structure (a plain gray
+       utility strip, then a taller white band for the logo) instead of
+       this subsite's previous single nav row - see public/css/sdk-theme.css's
+       header comment for the rest of what changed on this branch and why. */-->
 <div th:fragment="sdkHeader">
     <!--/* Same unmissable, full-width disclaimer bar as eudi_web_login's own
            .demo-banner (see that file's style.css) - same colors/border/
@@ -23,6 +22,7 @@
             <strong>Demo</strong> - not SDK's real site.
         </span>
     </div>
+    <div class="sdk-header-utility"></div>
     <header class="sdk-nav">
         <a th:href="@{/issuer/sdk/ehic}" class="sdk-brand">
             <img class="sdk-logo" th:src="@{/public/img/sdk-logo.svg}" alt=""/>
@@ -56,8 +56,49 @@
     </span>
 </nav>
 
+<!--/* EXPERIMENT (branch: sdk-visual-consistency): the navy band below now
+       carries the same decorative icon row + version/legal-link strip as
+       eudi_web_login's own .footer-band, not just the plain disclaimer
+       line this used to be - see that app's views.py/style.css for the
+       source of every icon/string reused here. Deliberately NOT reused:
+       its .theme-toggle button - that toggles a real light/dark override
+       there, and this subsite has no dark theme behind it to switch to,
+       so a toggle here would just be a button that does nothing. */-->
 <footer class="sdk-footer" th:fragment="sdkFooter">
-    <p th:text="#{sdk-ehic-footer-disclaimer}">
+    <div class="sdk-footer-band">
+        <ul class="sdk-footer-icons" aria-hidden="true">
+            <li class="sdk-footer-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M13.5 21v-7h2.2l.3-2.6h-2.5V9.7c0-.75.2-1.3 1.3-1.3h1.4V6.1C15.9 6 15 6 14 6c-2.1 0-3.5 1.3-3.5 3.6v2H8.3v2.6h2.2v7"/></svg>
+                <span>Facebook</span>
+            </li>
+            <li class="sdk-footer-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3.4"/><circle cx="16.3" cy="7.7" r=".6" fill="currentColor" stroke="none"/></svg>
+                <span>Instagram</span>
+            </li>
+            <li class="sdk-footer-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6.5" width="18" height="11" rx="3"/><path d="M10.5 9.5v5l4.3-2.5-4.3-2.5Z" fill="currentColor" stroke="none"/></svg>
+                <span>Youtube</span>
+            </li>
+            <li class="sdk-footer-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" stroke="none"/><path d="M8 8l8 8M16 8l-8 8" stroke="var(--footer-bg)" stroke-width="2.2" stroke-linecap="round"/></svg>
+                <span>Xing</span>
+            </li>
+            <li class="sdk-footer-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="8.2" cy="8.3" r=".9" fill="currentColor" stroke="none"/><path d="M8.2 11v6M12 11v6M12 13.5c0-1.4 1-2.5 2.3-2.5S16.5 12 16.5 13.4V17"/></svg>
+                <span>LinkedIn</span>
+            </li>
+        </ul>
+        <div class="sdk-footer-legal">
+            <span class="sdk-footer-build" th:text="#{sdk-ehic-footer-build}">Demo build</span>
+            <nav class="sdk-footer-links" aria-hidden="true">
+                <span th:text="#{sdk-ehic-footer-link-impressum}">Legal notice</span>
+                <span th:text="#{sdk-ehic-footer-link-terms}">Terms of use</span>
+                <span th:text="#{sdk-ehic-footer-link-privacy}">Privacy policy</span>
+                <span th:text="#{sdk-ehic-footer-link-compliance}">Compliance</span>
+            </nav>
+        </div>
+    </div>
+    <p class="sdk-footer-disclaimer" th:text="#{sdk-ehic-footer-disclaimer}">
         EUDI Wallet demo - not affiliated with or endorsed by Süddeutsche Krankenkasse
     </p>
 </footer>
