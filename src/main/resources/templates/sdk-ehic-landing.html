@@ -10,14 +10,51 @@
          this app already uses for the same reason). -->
     <script th:src="@{/public/js/embed-detect.js}"></script>
     <title th:text="#{sdk-ehic-brand-name} + ' ' + #{sdk-ehic-title-suffix}">Süddeutsche Krankenkasse (EUDI Wallet Demo)</title>
+    <!-- The identity-check reveal below (public/js/sdk-verify.js) is what
+         removes #sdk-issue-step's `hidden` - without JS that never happens,
+         which would otherwise strand anyone on the verify step with no way
+         to actually reach the "get your card" form. This is that fallback:
+         skip the theatre and show the real form straight away. -->
+    <noscript><style>#sdk-verify-step{display:none}#sdk-issue-step{display:block!important}</style></noscript>
 </head>
 <body class="sdk-ehic">
 <div th:replace="~{fragments/sdk-chrome :: sdkHeader}"></div>
 <main class="sdk-main">
-    <!--/* One card, one action: the whole point of this subsite is "no form to
-           fill in" - see public/css/sdk-theme.css's header comment for why this
-           is a modern card-based layout of its own rather than a clone of
-           eudi_web_login's period-accurate SDK-Kundenportal homage. */-->
+    <div th:replace="~{fragments/sdk-chrome :: sdkSteps(1)}"></div>
+
+    <!--/* The "before the QR code" beat: a simulated, clearly-labeled identity
+           check, styled loosely after a video-ident/Post-Ident-style process
+           (never claiming to actually run one - see sdk-ehic-verify-disclaimer
+           and public/js/sdk-verify.js) rather than jumping straight to "get
+           your card," so the demo's own story - that a real rollout verifies
+           who's asking before issuing anything - is something an audience
+           SEES happen here, not just something the presenter has to say out
+           loud. Purely front-end theatre: no backend route, no effect on the
+           actual POST below, which is unchanged. */-->
+    <section id="sdk-verify-step" class="sdk-card sdk-verify-card">
+        <span class="sdk-hero-icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="18" rx="2"/><circle cx="10" cy="10" r="2.5"/><path d="M6.5 17c0.5-2 2-3 3.5-3s3 1 3.5 3"/><path d="M19 8v4M19 16h.01"/></svg>
+        </span>
+        <h1 th:text="#{sdk-ehic-verify-heading}">First: confirm your identity</h1>
+        <p th:text="#{sdk-ehic-verify-body}">Similar to a Post-Ident-style process, SDK verifies your identity once via video identification before issuing your card.</p>
+        <p class="sdk-verify-disclaimer" th:text="#{sdk-ehic-verify-disclaimer}">Demo simulation - no real camera or ID check takes place.</p>
+
+        <button type="button" id="sdk-verify-btn" class="sdk-btn sdk-btn--primary sdk-btn--block" th:text="#{sdk-ehic-verify-btn}">Confirm identity via video-ident</button>
+
+        <ul id="sdk-verify-progress" class="sdk-verify-progress" hidden>
+            <li th:text="#{sdk-ehic-verify-progress1}">Connecting to the video-ident service …</li>
+            <li th:text="#{sdk-ehic-verify-progress2}">ID document recognized</li>
+            <li th:text="#{sdk-ehic-verify-progress3}">Face match successful</li>
+            <li th:text="#{sdk-ehic-verify-progress4}">Identity confirmed</li>
+        </ul>
+    </section>
+
+    <!--/* Everything below used to be the whole page - now the reveal that
+           follows the (simulated) identity check above, unchanged otherwise:
+           one card, one action, "no form to fill in" is still the whole
+           pitch here (see public/css/sdk-theme.css's header comment). */-->
+    <div id="sdk-issue-step" hidden>
+    <p id="sdk-verify-done-note" class="sdk-verify-done-note" th:text="#{sdk-ehic-verify-done}">Identity confirmed - you can now request your card.</p>
     <section class="sdk-hero">
         <span class="sdk-hero-icon" aria-hidden="true">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 9.5h20"/><path d="M6 14h4"/></svg>
@@ -79,7 +116,9 @@
             </div>
         </div>
     </section>
+    </div>
 </main>
 <div th:replace="~{fragments/sdk-chrome :: sdkFooter}"></div>
+<script th:src="@{/public/js/sdk-verify.js}"></script>
 </body>
 </html>

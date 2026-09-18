@@ -10,6 +10,11 @@
 <body class="sdk-ehic">
 <div th:replace="~{fragments/sdk-chrome :: sdkHeader}"></div>
 <main class="sdk-main sdk-main--narrow">
+    <!--/* current=2, not 3: this app has no way of knowing when a wallet
+           elsewhere actually finishes fetching the credential (see the
+           comment on sdkSteps in fragments/sdk-chrome.html), so it never
+           claims step 3 ("saved to wallet") on its own. */-->
+    <div th:replace="~{fragments/sdk-chrome :: sdkSteps(2)}"></div>
     <!--/*@thymesVar id="uri" type="kotlin.String"*/-->
     <!--/*@thymesVar id="qrCode" type="kotlin.String"*/-->
     <!--/*@thymesVar id="qrCodeMediaType" type="kotlin.String"*/-->
