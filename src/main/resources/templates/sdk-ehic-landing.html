@@ -10,6 +10,15 @@
          paints - see public/js/embed-detect.js (same script the rest of
          this app already uses for the same reason). -->
     <script th:src="@{/public/js/embed-detect.js}"></script>
+    <!-- Re-applies a stored light/dark override before first paint (no
+         flash of the wrong theme) - same reasoning as eudi_web_login's
+         own inline theme-restore script, but as an external file rather
+         than inline: this app's CSP is `script-src 'self'` with no
+         'unsafe-inline', so an inline <script> here would just be
+         silently blocked - same reason the toggle button's own click
+         handler (public/js/sdk-theme-toggle.js) uses addEventListener
+         rather than an onclick="" attribute. -->
+    <script th:src="@{/public/js/sdk-theme-restore.js}"></script>
     <title th:text="#{sdk-ehic-brand-name} + ' ' + #{sdk-ehic-title-suffix}">Süddeutsche Krankenkasse (EUDI Wallet Demo)</title>
     <!-- The identity-check reveal below (public/js/sdk-verify.js) is what
          removes #sdk-issue-step's `hidden` - without JS that never happens,
@@ -102,5 +111,6 @@
 </main>
 <div th:replace="~{fragments/sdk-chrome :: sdkFooter}"></div>
 <script th:src="@{/public/js/sdk-verify.js}"></script>
+<script th:src="@{/public/js/sdk-theme-toggle.js}"></script>
 </body>
 </html>

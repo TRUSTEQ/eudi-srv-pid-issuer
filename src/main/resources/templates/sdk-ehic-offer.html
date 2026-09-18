@@ -6,6 +6,10 @@
     <link rel="stylesheet" type="text/css" th:href="@{/public/css/sdk-theme.css}">
     <link rel="icon" type="image/svg+xml" th:href="@{/public/img/sdk-favicon.svg}">
     <script th:src="@{/public/js/embed-detect.js}"></script>
+    <!-- Re-applies a stored light/dark override before first paint - see
+         sdk-ehic-landing.html's identical tag for why this is an external
+         file rather than inline (this app's CSP has no 'unsafe-inline'). -->
+    <script th:src="@{/public/js/sdk-theme-restore.js}"></script>
     <title th:text="#{sdk-ehic-brand-name} + ' ' + #{sdk-ehic-title-suffix}">Süddeutsche Krankenkasse (EUDI Wallet Demo)</title>
 </head>
 <body class="sdk-ehic">
@@ -49,5 +53,6 @@
 </main>
 <div th:replace="~{fragments/sdk-chrome :: sdkFooter}"></div>
 <script th:src="@{/public/js/qr-zoom.js}"></script>
+<script th:src="@{/public/js/sdk-theme-toggle.js}"></script>
 </body>
 </html>

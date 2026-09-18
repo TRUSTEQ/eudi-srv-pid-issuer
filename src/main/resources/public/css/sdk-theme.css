@@ -68,6 +68,31 @@
   --radius: 0;
 }
 
+/* Dark-mode variant, values copied straight from eudi_web_login's own
+   :root[data-theme="dark"] block - same reasoning as that file's own
+   comment: this subsite is a fixed LIGHT theme by default regardless of
+   the OS/browser's prefers-color-scheme (no such media query here on
+   purpose), and only ever shows dark via the explicit .sdk-theme-toggle
+   in the footer (fragments/sdk-chrome.html + public/js/sdk-theme-toggle.js),
+   which remembers the choice in localStorage the same way. --accent/
+   --accent-dark/--accent-tint are deliberately left alone here too, for
+   the same reason the reference file gives: the existing blue has enough
+   contrast against a dark background regardless. Every rule elsewhere in
+   this file already reads these custom properties rather than a literal
+   color, so this one block is what makes the whole page go dark - not a
+   second copy of every rule. */
+:root[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #121b2e;
+  --text: #e6e9f0;
+  --muted: #93a0b8;
+  --border: #29344a;
+  --header-bg: #0b1220;
+  --heading: #4ea1ff;
+  --footer-bg: #0a1830;
+}
+:root[data-theme="dark"] .sdk-deep-link { background: #0e1626; }
+
 .sdk-ehic { box-sizing: border-box; }
 .sdk-ehic *, .sdk-ehic *::before, .sdk-ehic *::after { box-sizing: inherit; }
 
@@ -517,10 +542,35 @@ html.is-embedded .sdk-brand-name { display: none; }
    actual numbers at both ends are its, not invented for this subsite. */
 .sdk-footer { margin-top: 64px; }
 .sdk-footer-band {
+  position: relative;
   background: var(--footer-bg);
   padding: 32px 16px 20px;
   text-align: center;
 }
+/* The reference site's own small circular control sitting right on the
+   seam between the white page and the navy band - repurposed here as
+   this subsite's light/dark toggle, same as eudi_web_login's own
+   .theme-toggle (background: var(--footer-bg) so it reads as "part of
+   the band" in both themes without a separate dark override). */
+.sdk-theme-toggle {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid var(--bg);
+  background: var(--footer-bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+.sdk-theme-toggle svg { width: 18px; height: 18px; }
+.sdk-theme-toggle:hover { filter: brightness(1.15); }
 .sdk-footer-icons {
   display: flex;
   justify-content: center;

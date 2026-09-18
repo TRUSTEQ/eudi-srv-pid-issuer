@@ -56,16 +56,20 @@
     </span>
 </nav>
 
-<!--/* EXPERIMENT (branch: sdk-visual-consistency): the navy band below now
-       carries the same decorative icon row + version/legal-link strip as
-       eudi_web_login's own .footer-band, not just the plain disclaimer
-       line this used to be - see that app's views.py/style.css for the
-       source of every icon/string reused here. Deliberately NOT reused:
-       its .theme-toggle button - that toggles a real light/dark override
-       there, and this subsite has no dark theme behind it to switch to,
-       so a toggle here would just be a button that does nothing. */-->
+<!--/* The navy band below carries the same decorative icon row, version/
+       legal-link strip, AND light/dark toggle as eudi_web_login's own
+       .footer-band - see that app's views.py/style.css for the source of
+       every icon/string/color reused here, and public/js/sdk-theme-toggle.js
+       for the toggle's own logic. This subsite now has a real dark theme
+       behind it (see sdk-theme.css's :root[data-theme="dark"] block) -
+       every other rule in that file already reads its custom properties
+       rather than a literal color, so that one block plus this toggle is
+       the whole feature, not a second stylesheet. */-->
 <footer class="sdk-footer" th:fragment="sdkFooter">
     <div class="sdk-footer-band">
+        <button type="button" class="sdk-theme-toggle" id="sdk-theme-toggle" th:attr="aria-label=#{sdk-ehic-toggle-theme-aria}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+        </button>
         <ul class="sdk-footer-icons" aria-hidden="true">
             <li class="sdk-footer-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M13.5 21v-7h2.2l.3-2.6h-2.5V9.7c0-.75.2-1.3 1.3-1.3h1.4V6.1C15.9 6 15 6 14 6c-2.1 0-3.5 1.3-3.5 3.6v2H8.3v2.6h2.2v7"/></svg>
