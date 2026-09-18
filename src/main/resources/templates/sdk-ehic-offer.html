@@ -10,21 +10,24 @@
 <body class="sdk-ehic">
 <div th:replace="~{fragments/sdk-chrome :: sdkHeader}"></div>
 <main class="sdk-main sdk-main--narrow">
-    <!--/* current=2, not 3: this app has no way of knowing when a wallet
-           elsewhere actually finishes fetching the credential (see the
-           comment on sdkSteps in fragments/sdk-chrome.html), so it never
-           claims step 3 ("saved to wallet") on its own. */-->
+    <!--/* Just Identität/Karte - see sdkSteps in fragments/sdk-chrome.html
+           for why this never had a third "saved to wallet" step at all
+           (no way to know when/whether a wallet elsewhere finishes). */-->
     <div th:replace="~{fragments/sdk-chrome :: sdkSteps(2)}"></div>
     <!--/*@thymesVar id="uri" type="kotlin.String"*/-->
     <!--/*@thymesVar id="qrCode" type="kotlin.String"*/-->
     <!--/*@thymesVar id="qrCodeMediaType" type="kotlin.String"*/-->
-    <!--/* Same single, focused card as the landing page - QR code, a direct
-           wallet deep-link button (works when the wallet app is registered on
-           this same device), the raw link behind a disclosure for anyone who'd
-           rather copy it. No status polling here: this is the ISSUER side of
-           the flow, with no way of knowing when a wallet elsewhere finishes
-           fetching the credential - unlike the client site's own waiting page,
-           which really is waiting on a result. */-->
+    <!--/* Same single, focused card as the landing page - just the QR code
+           and the raw link behind a disclosure for anyone who'd rather copy
+           it. No "Open with wallet" deep-link button here: this app's
+           wallet is a plain website, not a native/PWA app registered as a
+           handler for the eu-eaa-offer:// scheme, so that button never
+           actually did anything on any device - removed rather than left
+           in looking like a working shortcut. No status polling either:
+           this is the ISSUER side of the flow, with no way of knowing when
+           a wallet elsewhere finishes fetching the credential - unlike the
+           client site's own waiting page, which really is waiting on a
+           result. */-->
     <section class="sdk-card">
         <h1 th:text="#{sdk-ehic-offer-hero-heading}">Scan &amp; receive your card</h1>
         <p th:text="#{sdk-ehic-offer-intro}">Scan the QR code with your EUDI Wallet app.</p>
@@ -32,8 +35,6 @@
         <div class="sdk-qr-wrap">
             <img class="sdk-qr qr-zoom-target" th:src="'data:' + ${qrCodeMediaType} + ';base64,' + ${qrCode}" alt="" th:alt="#{qr-code}"/>
         </div>
-
-        <a class="sdk-btn sdk-btn--primary sdk-btn--block" href="" th:href="${uri}" th:text="#{sdk-ehic-open-wallet-btn}">Open with wallet</a>
 
         <details class="sdk-reveal">
             <summary th:text="#{sdk-ehic-copy-link-summary}">Or copy the link below</summary>

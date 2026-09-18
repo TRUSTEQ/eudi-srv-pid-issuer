@@ -31,17 +31,19 @@
     </header>
 </div>
 
-<!--/* The "story so far" strip - Identität -> Karte -> Wallet - shown on both
+<!--/* The "story so far" strip - Identität -> Karte - shown on both
        sdk-ehic-landing.html and sdk-ehic-offer.html so the whole subsite
        reads as one continuous narrative instead of two unrelated pages.
        `current` only sets the *initial* highlighted step from the server
        side; the landing page's own JS (sdk-verify.js) moves it from 1 to 2
        once the simulated identity check finishes, without a page reload -
-       see that file. Deliberately stops advancing itself at 2: this app has
-       no way of knowing when a wallet elsewhere actually finishes fetching
-       the credential (same reasoning as sdk-ehic-offer.html's own comment
-       about not polling), so claiming step 3 ("saved to wallet") from here
-       would be a claim this app can't actually back up. */-->
+       see that file. Deliberately only two steps, not three: this app has
+       no way of knowing when (or whether) a wallet elsewhere actually
+       finishes fetching the credential once the QR is scanned - there's no
+       polling back to the issuer (same reasoning as sdk-ehic-offer.html's
+       own comment about that) - so a third "saved to wallet" step would
+       show as permanently unlit, promising a confirmation this page can
+       never actually give. */-->
 <nav class="sdk-steps" th:fragment="sdkSteps(current)" aria-label="Fortschritt">
     <span class="sdk-step" data-step="1" th:classappend="${current == 1} ? ' sdk-step--active'">
         <span class="sdk-step-num">1</span>
@@ -51,11 +53,6 @@
     <span class="sdk-step" data-step="2" th:classappend="${current == 2} ? ' sdk-step--active'">
         <span class="sdk-step-num">2</span>
         <span class="sdk-step-label" th:text="#{sdk-ehic-step2-label}">Card</span>
-    </span>
-    <span class="sdk-step-sep" aria-hidden="true"></span>
-    <span class="sdk-step" data-step="3">
-        <span class="sdk-step-num">3</span>
-        <span class="sdk-step-label" th:text="#{sdk-ehic-step3-label}">Wallet</span>
     </span>
 </nav>
 

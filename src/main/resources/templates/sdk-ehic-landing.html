@@ -61,36 +61,17 @@
         </span>
         <h1 th:text="#{sdk-ehic-hero-heading}">Your Health Insurance Card. Digital.</h1>
         <p th:text="#{sdk-ehic-left-body}">Get your digital EHIC issued straight to your EUDI Wallet.</p>
+        <!--/* No custom-claims form here on purpose - this subsite's whole
+               pitch is "one click, no form" (see IssuerUi.kt's
+               handleGenerateSdkEhicOffer(), which still defaults every
+               claim itself when none is posted - nothing there needed to
+               change to remove this). An editable-fields escape hatch
+               just added friction/distraction not worth it for this demo;
+               the generic multi-credential picker's own EHIC fieldset
+               (generate-credentials-offer-form.html) still has one, for
+               anyone who does want to type in specific demo data. */-->
         <form method="post" th:action="@{/issuer/sdk/ehic/generate}">
             <button type="submit" class="sdk-btn sdk-btn--primary sdk-btn--block" th:text="#{sdk-ehic-primary-btn}">Get your card now</button>
-
-            <!--/* Optional, collapsed by default: this subsite's whole pitch is
-                   "one click, no form" (see IssuerUi.kt's handleGenerateSdkEhicOffer())
-                   - typing in real-ish demo data is an escape hatch for anyone who
-                   wants it, not the default path. Same ehic_* field names/labels as
-                   the generic form's own EHIC fieldset (generate-credentials-offer-
-                   form.html), reused rather than duplicated. */-->
-            <details class="sdk-reveal sdk-optional-details">
-                <summary th:text="#{sdk-ehic-custom-data-summary}">Enter your own details (optional)</summary>
-                <div class="sdk-optional-fields">
-                    <div class="sdk-field">
-                        <label for="ehic_given_name" th:text="#{field-given-name}">Given Name</label>
-                        <input type="text" name="ehic_given_name" id="ehic_given_name" autocomplete="given-name">
-                    </div>
-                    <div class="sdk-field">
-                        <label for="ehic_family_name" th:text="#{field-family-name}">Family Name</label>
-                        <input type="text" name="ehic_family_name" id="ehic_family_name" autocomplete="family-name">
-                    </div>
-                    <div class="sdk-field">
-                        <label for="ehic_birth_date" th:text="#{field-date-of-birth}">Date of Birth</label>
-                        <input type="date" name="ehic_birth_date" id="ehic_birth_date" autocomplete="bday">
-                    </div>
-                    <div class="sdk-field">
-                        <label for="ehic_personal_administrative_number" th:text="#{field-health-insurance-number}">Health Insurance Number</label>
-                        <input type="text" name="ehic_personal_administrative_number" id="ehic_personal_administrative_number">
-                    </div>
-                </div>
-            </details>
         </form>
         <p class="sdk-hero-note" th:text="#{sdk-ehic-left-note}">No real ID is needed for this demo.</p>
     </section>
