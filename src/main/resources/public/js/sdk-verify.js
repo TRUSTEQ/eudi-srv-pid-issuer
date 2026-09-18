@@ -1,8 +1,9 @@
 /*
  * Drives the SDK/EHIC landing page's simulated identity-check step (see
  * sdk-ehic-landing.html's #sdk-verify-step) - purely front-end theatre with
- * a fixed timeline, not a real check of anything: there is no camera, no
- * document scan, no network call here. It exists so a live audience SEES
+ * a fixed timeline, not a real check of anything: no PID is actually
+ * requested from a wallet, no network call happens here. It exists so a
+ * live audience SEES
  * "verify identity, then get your card" as two distinct beats instead of
  * only hearing the presenter say the first one was skipped - see the
  * top-level docs/governance/trust-and-compliance.md for why that

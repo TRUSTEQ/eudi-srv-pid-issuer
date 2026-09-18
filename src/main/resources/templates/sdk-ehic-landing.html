@@ -33,28 +33,35 @@
     <div th:replace="~{fragments/sdk-chrome :: sdkSteps(1)}"></div>
 
     <!--/* The "before the QR code" beat: a simulated, clearly-labeled identity
-           check, styled loosely after a video-ident/Post-Ident-style process
-           (never claiming to actually run one - see sdk-ehic-verify-disclaimer
-           and public/js/sdk-verify.js) rather than jumping straight to "get
-           your card," so the demo's own story - that a real rollout verifies
-           who's asking before issuing anything - is something an audience
-           SEES happen here, not just something the presenter has to say out
-           loud. Purely front-end theatre: no backend route, no effect on the
-           actual POST below, which is unchanged. */-->
+           check (never claiming to actually run one - see
+           sdk-ehic-verify-disclaimer and public/js/sdk-verify.js) rather
+           than jumping straight to "get your card," so the demo's own
+           story - that a real rollout verifies who's asking before
+           issuing anything - is something an audience SEES happen here,
+           not just something the presenter has to say out loud.
+           Deliberately generic, not styled after any real third-party
+           identification procedure (an earlier version framed this as
+           "Post-Ident-style video identification," which doesn't match
+           how identity proofing actually works in the EUDI ecosystem:
+           the wallet already holds a PID, issued once by an authorized
+           PID Provider, and other issuers rely on presenting *that*
+           rather than running their own separate ad-hoc ID check). Purely
+           front-end theatre: no backend route, no effect on the actual
+           POST below, which is unchanged. */-->
     <section id="sdk-verify-step" class="sdk-card sdk-verify-card">
         <span class="sdk-hero-icon" aria-hidden="true">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="18" rx="2"/><circle cx="10" cy="10" r="2.5"/><path d="M6.5 17c0.5-2 2-3 3.5-3s3 1 3.5 3"/><path d="M19 8v4M19 16h.01"/></svg>
         </span>
         <h1 th:text="#{sdk-ehic-verify-heading}">First: confirm your identity</h1>
-        <p th:text="#{sdk-ehic-verify-body}">Similar to a Post-Ident-style process, SDK verifies your identity once via video identification before issuing your card.</p>
-        <p class="sdk-verify-disclaimer" th:text="#{sdk-ehic-verify-disclaimer}">Demo simulation - no real camera or ID check takes place.</p>
+        <p th:text="#{sdk-ehic-verify-body}">Before issuing your digital health insurance card, SDK verifies your identity once using the PID already in your EUDI Wallet.</p>
+        <p class="sdk-verify-disclaimer" th:text="#{sdk-ehic-verify-disclaimer}">Demo simulation - no real PID is requested or checked.</p>
 
-        <button type="button" id="sdk-verify-btn" class="sdk-btn sdk-btn--primary sdk-btn--block" th:text="#{sdk-ehic-verify-btn}">Confirm identity via video-ident</button>
+        <button type="button" id="sdk-verify-btn" class="sdk-btn sdk-btn--primary sdk-btn--block" th:text="#{sdk-ehic-verify-btn}">Confirm identity</button>
 
         <ul id="sdk-verify-progress" class="sdk-verify-progress" hidden>
-            <li th:text="#{sdk-ehic-verify-progress1}">Connecting to the video-ident service …</li>
-            <li th:text="#{sdk-ehic-verify-progress2}">ID document recognized</li>
-            <li th:text="#{sdk-ehic-verify-progress3}">Face match successful</li>
+            <li th:text="#{sdk-ehic-verify-progress1}">Connecting to your EUDI Wallet …</li>
+            <li th:text="#{sdk-ehic-verify-progress2}">PID received</li>
+            <li th:text="#{sdk-ehic-verify-progress3}">Matching details</li>
             <li th:text="#{sdk-ehic-verify-progress4}">Identity confirmed</li>
         </ul>
     </section>
