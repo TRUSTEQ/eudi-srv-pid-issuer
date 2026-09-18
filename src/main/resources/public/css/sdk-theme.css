@@ -4,17 +4,18 @@
  * top of main.css (this app's own dark issuer theme), so nothing from that
  * theme bleeds into this one and vice versa.
  *
- * EXPERIMENT (branch: sdk-visual-consistency) - this used to be an
- * unapologetically different "modern product UI" language (soft shadows,
- * 16px rounded corners) on purpose, since only the logo + brand colors were
- * meant to carry the SDK identity, not the exact visual material. This
- * branch tries the opposite bet: reuse eudi_web_login's own flat/square/
- * uppercase/Roboto language (see that app's static/style.css - the same
- * source comment explains where each token below comes from) so the issuer
- * and the client site read as the same design system, not just the same
- * two colors. Structure (single-column, card-grouped sections) is
- * unchanged - only the material (radius, shadow, font, button style,
- * header/footer treatment) moved to match.
+ * This used to be an unapologetically different "modern product UI"
+ * language (soft shadows, 16px rounded corners) on purpose, since only
+ * the logo + brand colors were meant to carry the SDK identity, not the
+ * exact visual material - since replaced with the opposite bet: reuse
+ * eudi_web_login's own flat/square/uppercase/Roboto language (see that
+ * app's static/style.css - the same source comment explains where each
+ * token below comes from) so the issuer and the client site read as the
+ * same design system, not just the same two colors, right down to a
+ * matching footer (icon row, legal-link strip, light/dark toggle).
+ * Structure (single-column, card-grouped sections) is unchanged - only
+ * the material (radius, shadow, font, button style, header/footer
+ * treatment) moved to match.
  *
  * Written mobile-first throughout: every base rule below is the phone-
  * width layout, and the one @media (min-width: 700px) block at the bottom
@@ -328,14 +329,21 @@ html.is-embedded .sdk-brand-name { display: none; }
   color: #1a7a4c;
 }
 
-/* ---------- hero ---------- */
-/* var(--radius)/var(--shadow) now resolve to 0/none (see :root above) -
+/* ---------- hero / QR-offer card ---------- */
+/* Shared by .sdk-hero (landing page) and .sdk-card (offer page + the
+   identity-check step) - identical since the flat/square redesign
+   collapsed what used to be two independently-tuned "modern card"
+   panels into the same bordered-panel treatment; kept as one rule
+   instead of two copies that would only drift out of sync again. Each
+   still gets its own child-element rules (h1/p/etc.) below, and a
+   slightly different desktop padding override further down.
+   var(--radius)/var(--shadow) now resolve to 0/none (see :root above) -
    a bare panel would disappear entirely into the white page background
    with nothing else to delineate it, so a thin border (the same
    border-based-not-shadow-based language eudi_web_login itself uses for
    its QR code/flash/deep-link boxes) replaces the shadow this used to
    have, rather than dropping all delineation outright. */
-.sdk-hero {
+.sdk-hero, .sdk-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -465,18 +473,9 @@ html.is-embedded .sdk-brand-name { display: none; }
 .sdk-feature .sdk-link { display: inline-block; margin-top: 8px; }
 
 /* ---------- QR / offer card ---------- */
-.sdk-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 28px 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
+/* .sdk-card's own panel styling (background/border/radius/shadow/padding/
+   flex layout) now lives merged into .sdk-hero's rule above - see that
+   comment for why. Only this card's own child-element rules stay here. */
 .sdk-card h1 {
   margin: 0;
   font-size: 22px;

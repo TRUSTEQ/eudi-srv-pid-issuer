@@ -133,8 +133,7 @@ class IssuerUi(
             POST(
                 SDK_EHIC_GENERATE,
                 contentType(MediaType.APPLICATION_FORM_URLENCODED) and accept(MediaType.TEXT_HTML),
-                ::handleGenerateSdkEhicOffer,
-            )
+            ) { handleGenerateSdkEhicOffer() }
         }
 
     private suspend fun handleDisplayGenerateCredentialsOfferForm(): ServerResponse {
@@ -211,37 +210,23 @@ class IssuerUi(
 
     // Same createCredentialsOffer use case the generic form's
     // handleGenerateCredentialsOffer() above drives, just with a hardcoded
-    // credential id (EHIC) and pre-authorized_code grant instead of a
-    // full form - this subsite's whole point is "one click, no form" by
-    // default. The one thing still read from the request is the optional
-    // "enter your own details" disclosure on sdk-ehic-landing.html - same
-    // ehic_* field names/semantics as the generic form's own EHIC fieldset
-    // (see createCredentialOfferRequest() below), so this demo issuer's
-    // auto-generated sample data is used for whichever fields are left
-    // blank, exactly like the generic form's own behaviour.
-    private suspend fun handleGenerateSdkEhicOffer(request: ServerRequest): ServerResponse =
+    // credential id (EHIC), no custom claims, and pre-authorized_code
+    // grant instead of a full form - this subsite's whole point is "one
+    // click, no form," full stop (an earlier version also read an
+    // optional "enter your own details" disclosure from the request, but
+    // that form was removed from sdk-ehic-landing.html - the generic
+    // form's own EHIC fieldset still covers that case for anyone who
+    // wants it). This demo issuer's own auto-generated sample data is
+    // used for every claim, exactly like the generic form's own
+    // behaviour when its optional fields are left blank.
+    private suspend fun handleGenerateSdkEhicOffer(): ServerResponse =
         effect {
             log.debug("Generating SDK/EHIC Credentials Offer")
-            val formData = request.awaitFormData()
-            val ehicFields = listOf("family_name", "given_name", "birth_date", "personal_administrative_number")
-            val enteredFields =
-                ehicFields.mapNotNull { field ->
-                    formData["ehic_$field"]?.firstOrNull { it.isNotBlank() }?.let { field to it }
-                }
-            val customData =
-                if (enteredFields.isEmpty()) {
-                    emptyMap()
-                } else {
-                    mapOf(
-                        IssueEhic.CONFIGURATION_ID to
-                            buildJsonObject { enteredFields.forEach { (field, value) -> put(field, value) } },
-                    )
-                }
             createCredentialsOffer(
                 CreateCredentialsOffer.Request(
                     credentialConfigurationIds = setOf(IssueEhic.CONFIGURATION_ID),
                     preAuthorizedCode = true,
-                    customData = customData,
+                    customData = emptyMap(),
                 ),
             )
         }.fold(
