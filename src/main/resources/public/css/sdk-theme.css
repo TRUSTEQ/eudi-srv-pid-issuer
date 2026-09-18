@@ -58,6 +58,20 @@
 .sdk-ehic { box-sizing: border-box; }
 .sdk-ehic *, .sdk-ehic *::before, .sdk-ehic *::after { box-sizing: inherit; }
 
+/* Safety net for every hidden/reveal toggle on this subsite (sdk-verify.js
+   sets/clears the `hidden` attribute on #sdk-verify-step/#sdk-issue-step/
+   #sdk-verify-progress - see that file) - found the hard way: several of
+   those elements' own classes (.sdk-card, .sdk-verify-progress) set
+   `display` themselves, and an author stylesheet's `display` declaration
+   beats the UA stylesheet's `[hidden] { display: none }` regardless of
+   selector specificity, since origin outranks specificity in the cascade.
+   Without this, `el.hidden = true` silently does nothing on any element
+   whose own CSS already sets a `display` value. !important is the
+   deliberate, simplest way to guarantee `hidden` always wins over
+   whatever else is styling that same element, now or in any future
+   addition to this page - not reached for anywhere else in this rule. */
+.sdk-ehic [hidden] { display: none !important; }
+
 body.sdk-ehic {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -138,6 +152,18 @@ html.is-embedded .sdk-brand-name { display: none; }
   gap: 28px;
 }
 .sdk-main--narrow { max-width: 480px; }
+
+/* sdk-ehic-landing.html's reveal wrapper (#sdk-issue-step) is a plain
+   <div>, not a flex container, so its children (.sdk-hero/.sdk-features)
+   don't automatically inherit .sdk-main's own gap the way direct children
+   would - without this they'd sit right on top of each other. Same gap
+   values as .sdk-main above/below, kept in sync deliberately rather than
+   with a shared class, since there's only the one place this applies. */
+#sdk-issue-step {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
 
 /* ---------- step indicator ---------- */
 /* Identität -> Karte -> Wallet - see fragments/sdk-chrome.html's sdkSteps
@@ -472,6 +498,7 @@ html.is-embedded .sdk-brand-name { display: none; }
 @media (min-width: 700px) {
   .sdk-nav { padding: 24px 24px 16px; }
   .sdk-main { padding: 16px 24px 64px; gap: 32px; }
+  #sdk-issue-step { gap: 32px; }
   .sdk-hero { padding: 44px 48px; }
   .sdk-hero h1 { font-size: 30px; }
   .sdk-hero p { font-size: 16px; }
