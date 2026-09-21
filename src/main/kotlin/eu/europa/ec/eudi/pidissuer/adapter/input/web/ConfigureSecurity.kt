@@ -64,6 +64,8 @@ fun configureUiSecurity(
                 IssuerUi.GENERATE_CREDENTIALS_OFFER,
                 IssuerUi.SDK_EHIC_LANDING,
                 IssuerUi.SDK_EHIC_GENERATE,
+                IssuerUi.TQK_EHIC_LANDING,
+                IssuerUi.TQK_EHIC_GENERATE,
             )
 
         securityMatcher(pathMatcher)

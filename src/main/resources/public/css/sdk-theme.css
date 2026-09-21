@@ -97,9 +97,10 @@
 .sdk-ehic { box-sizing: border-box; }
 .sdk-ehic *, .sdk-ehic *::before, .sdk-ehic *::after { box-sizing: inherit; }
 
-/* Safety net for every hidden/reveal toggle on this subsite (sdk-verify.js
-   sets/clears the `hidden` attribute on #sdk-verify-step/#sdk-issue-step/
-   #sdk-verify-progress - see that file) - found the hard way: several of
+/* Safety net for every hidden/reveal toggle on this subsite (shared
+   public/js/identity-verify.js sets/clears the `hidden` attribute on
+   #identity-verify-step/#issue-step/#identity-verify-progress - see that
+   file) - found the hard way: several of
    those elements' own classes (.sdk-card, .sdk-verify-progress) set
    `display` themselves, and an author stylesheet's `display` declaration
    beats the UA stylesheet's `[hidden] { display: none }` regardless of
@@ -193,13 +194,14 @@ html.is-embedded .sdk-brand-name { display: none; }
 }
 .sdk-main--narrow { max-width: 480px; }
 
-/* sdk-ehic-landing.html's reveal wrapper (#sdk-issue-step) is a plain
+/* sdk-ehic-landing.html's reveal wrapper (#issue-step - a neutral id,
+   shared with the TQK subsite's own tqk-ehic-landing.html) is a plain
    <div>, not a flex container, so its children (.sdk-hero/.sdk-features)
    don't automatically inherit .sdk-main's own gap the way direct children
    would - without this they'd sit right on top of each other. Same gap
    values as .sdk-main above/below, kept in sync deliberately rather than
    with a shared class, since there's only the one place this applies. */
-#sdk-issue-step {
+#issue-step {
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -211,7 +213,16 @@ html.is-embedded .sdk-brand-name { display: none; }
    number badges (radius 0) instead of the previous circles, matching the
    flat language everywhere else on this page now - one of the few spots
    where "flat/square" reaches all the way into a small UI detail, not
-   just the big containers. */
+   just the big containers.
+   .sdk-steps (the outer strip) stays brand-prefixed - purely cosmetic,
+   nothing reaches for it by name. The individual .step/.step-num/
+   .step-label/.step--active/.step-sep classes are deliberately NEUTRAL,
+   not .sdk-step* - the shared public/js/identity-verify.js toggles
+   .step--active by selector after the identity-check animation finishes
+   (see that file), and it's shared verbatim with the TQK subsite's own
+   fragments/tqk-chrome.html, so both stylesheets style the same class
+   names here rather than each defining their own that the shared script
+   would have to know to pick between. */
 .sdk-steps {
   display: flex;
   align-items: center;
@@ -219,13 +230,13 @@ html.is-embedded .sdk-brand-name { display: none; }
   gap: 8px;
   padding: 2px 4px 4px;
 }
-.sdk-step {
+.step {
   display: flex;
   align-items: center;
   gap: 6px;
   color: var(--muted);
 }
-.sdk-step-num {
+.step-num {
   width: 22px;
   height: 22px;
   border-radius: 0;
@@ -238,10 +249,10 @@ html.is-embedded .sdk-brand-name { display: none; }
   justify-content: center;
   flex-shrink: 0;
 }
-.sdk-step-label { font-size: 12.5px; font-weight: 600; }
-.sdk-step--active .sdk-step-num { background: var(--accent); color: #fff; }
-.sdk-step--active .sdk-step-label { color: var(--text); }
-.sdk-step-sep {
+.step-label { font-size: 12.5px; font-weight: 600; }
+.step--active .step-num { background: var(--accent); color: #fff; }
+.step--active .step-label { color: var(--text); }
+.step-sep {
   width: 20px;
   height: 1px;
   background: var(--border);
@@ -616,7 +627,7 @@ html.is-embedded .sdk-brand-name { display: none; }
 @media (min-width: 700px) {
   .sdk-nav { padding: 32px 24px 36px; }
   .sdk-main { padding: 16px 24px 64px; gap: 32px; }
-  #sdk-issue-step { gap: 32px; }
+  #issue-step { gap: 32px; }
   .sdk-hero { padding: 44px 48px; }
   .sdk-hero h1 { font-size: 30px; }
   .sdk-hero p { font-size: 16px; }

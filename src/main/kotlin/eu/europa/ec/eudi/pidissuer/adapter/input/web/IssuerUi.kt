@@ -93,12 +93,17 @@ class IssuerUi(
 ) {
     val router: RouterFunction<ServerResponse> =
         coRouter {
-            // Redirect / to the SDK/EHIC subsite in DEMO_BRAND=sdk (the demo's
-            // own front door - see the top-level plan), or to the generic
-            // 'generate credentials offer' form in neutral mode, unchanged from
-            // before this subsite existed.
+            // Redirect / to whichever branded subsite DEMO_BRAND selects (the
+            // demo's own front door - see the top-level plan), or to the
+            // generic 'generate credentials offer' form in neutral mode,
+            // unchanged from before either subsite existed.
             (GET("") or GET("/")) {
-                val target = if (demoBrand.sdk) SDK_EHIC_LANDING else GENERATE_CREDENTIALS_OFFER
+                val target =
+                    when {
+                        demoBrand.sdk -> SDK_EHIC_LANDING
+                        demoBrand.tqk -> TQK_EHIC_LANDING
+                        else -> GENERATE_CREDENTIALS_OFFER
+                    }
                 log.info("Redirecting to {}", target)
                 ServerResponse
                     .status(HttpStatus.TEMPORARY_REDIRECT)
@@ -134,6 +139,22 @@ class IssuerUi(
                 SDK_EHIC_GENERATE,
                 contentType(MediaType.APPLICATION_FORM_URLENCODED) and accept(MediaType.TEXT_HTML),
             ) { handleGenerateSdkEhicOffer() }
+
+            // TQK/EHIC subsite (DEMO_BRAND=tqk) - a second fictional insurer
+            // narrative alongside SDK, same shape in every way (own landing/
+            // offer templates, own theme, same hardcoded-EHIC/pre-authorized_code
+            // use case) - see tqk-ehic-landing.html/tqk-ehic-offer.html. Also
+            // reachable regardless of DEMO_BRAND, for the same reason as SDK's
+            // routes above.
+            GET(
+                TQK_EHIC_LANDING,
+                contentType(MediaType.ALL) and accept(MediaType.TEXT_HTML),
+            ) { handleDisplayTqkEhicLanding() }
+
+            POST(
+                TQK_EHIC_GENERATE,
+                contentType(MediaType.APPLICATION_FORM_URLENCODED) and accept(MediaType.TEXT_HTML),
+            ) { handleGenerateTqkEhicOffer() }
         }
 
     private suspend fun handleDisplayGenerateCredentialsOfferForm(): ServerResponse {
@@ -239,6 +260,37 @@ class IssuerUi(
             },
         )
 
+    private suspend fun handleDisplayTqkEhicLanding(): ServerResponse {
+        log.info("Displaying TQK/EHIC subsite landing page")
+        return ServerResponse
+            .ok()
+            .contentType(MediaType.TEXT_HTML)
+            .renderAndAwait("tqk-ehic-landing", mapOf("brand" to demoBrand))
+    }
+
+    // Same shape as handleGenerateSdkEhicOffer() above, right down to the
+    // comment: one click, no form, this demo issuer's own auto-generated
+    // sample data for every claim.
+    private suspend fun handleGenerateTqkEhicOffer(): ServerResponse =
+        effect {
+            log.debug("Generating TQK/EHIC Credentials Offer")
+            createCredentialsOffer(
+                CreateCredentialsOffer.Request(
+                    credentialConfigurationIds = setOf(IssueEhic.CONFIGURATION_ID),
+                    preAuthorizedCode = true,
+                    customData = emptyMap(),
+                ),
+            )
+        }.fold(
+            transform = { credentialsOfferUri ->
+                context(generateQrCode) { credentialsOfferUri.tqkEhicOfferSuccessResponse(demoBrand) }
+            },
+            recover = { error ->
+                log.warn("Unable to generate TQK/EHIC Credentials Offer. Error: {}", error)
+                error.credentialOfferErrorResponse(demoBrand)
+            },
+        )
+
     private fun createUsefulLinks(
         credentialIssuer: CredentialIssuerId,
         authorizationServer: HttpsUrl,
@@ -282,6 +334,8 @@ class IssuerUi(
         const val GENERATE_CREDENTIALS_OFFER: String = "/issuer/credentialsOffer/generate"
         const val SDK_EHIC_LANDING: String = "/issuer/sdk/ehic"
         const val SDK_EHIC_GENERATE: String = "/issuer/sdk/ehic/generate"
+        const val TQK_EHIC_LANDING: String = "/issuer/tqk/ehic"
+        const val TQK_EHIC_GENERATE: String = "/issuer/tqk/ehic/generate"
         private val log = LoggerFactory.getLogger(IssuerUi::class.java)
     }
 }
@@ -385,6 +439,28 @@ private suspend fun Uri.sdkEhicOfferSuccessResponse(demoBrand: DemoBrandProperti
         .contentType(MediaType.TEXT_HTML)
         .renderAndAwait(
             "sdk-ehic-offer",
+            mapOf(
+                "uri" to uri.toString(),
+                "qrCode" to Base64.encode(qrCode),
+                "qrCodeMediaType" to "image/png",
+                "openid4VciVersion" to OpenId4VciSpec.VERSION,
+                "brand" to demoBrand,
+            ),
+        )
+}
+
+// Same shape as sdkEhicOfferSuccessResponse() above, rendering the TQK/EHIC
+// subsite's own reskinned QR-display template - see tqk-ehic-offer.html/
+// public/css/tqk-theme.css.
+context(generateQrCode: GenerateQqCode)
+private suspend fun Uri.tqkEhicOfferSuccessResponse(demoBrand: DemoBrandProperties): ServerResponse {
+    val uri = this@tqkEhicOfferSuccessResponse
+    val qrCode = generateQrCode(uri, Format.PNG, Dimensions(Pixels(640u), Pixels(640u)))
+    return ServerResponse
+        .ok()
+        .contentType(MediaType.TEXT_HTML)
+        .renderAndAwait(
+            "tqk-ehic-offer",
             mapOf(
                 "uri" to uri.toString(),
                 "qrCode" to Base64.encode(qrCode),
