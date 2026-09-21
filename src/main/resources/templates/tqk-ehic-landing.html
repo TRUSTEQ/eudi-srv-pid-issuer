@@ -1,9 +1,5 @@
 <!doctype html>
-<!-- data-default-theme="dark": this subsite defaults to dark (unlike SDK's
-     light default) - see tqk-theme.css's header comment for why, and
-     public/js/theme-restore.js for how this attribute is what actually
-     drives that without changing SDK's own default at all. -->
-<html lang="de" data-default-theme="dark" xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,12 +8,10 @@
     <!-- Blocking (no defer/async) and in <head>, ahead of <body>, so the
          is-embedded class it may set lands before the header below ever
          paints - see public/js/embed-detect.js (same script the rest of
-         this app already uses for the same reason). -->
+         this app already uses for the same reason). No theme-restore.js
+         here (unlike the SDK subsite) - this subsite is fixed dark, no
+         light/dark choice to restore - see tqk-theme.css's header comment. -->
     <script th:src="@{/public/js/embed-detect.js}"></script>
-    <!-- Re-applies a stored light/dark override before first paint (no
-         flash of the wrong theme) - see public/js/theme-restore.js's own
-         comment; shared verbatim with the SDK subsite. -->
-    <script th:src="@{/public/js/theme-restore.js}"></script>
     <title th:text="#{tqk-ehic-brand-name} + ' ' + #{tqk-ehic-title-suffix}">TRUSTEQ-Krankenkasse (EUDI Wallet Demo)</title>
     <!-- The identity-check reveal below (public/js/identity-verify.js,
          shared with the SDK subsite) is what removes #issue-step's
@@ -100,6 +94,5 @@
 </main>
 <div th:replace="~{fragments/tqk-chrome :: tqkFooter}"></div>
 <script th:src="@{/public/js/identity-verify.js}"></script>
-<script th:src="@{/public/js/theme-toggle.js}"></script>
 </body>
 </html>

@@ -1,127 +1,78 @@
 /*
  * Only loaded by the TQK/EHIC subsite (tqk-ehic-landing.html/tqk-ehic-
  * offer.html) - a self-contained stylesheet, deliberately NOT layered on
- * top of main.css (this app's own dark issuer theme), so nothing from that
- * theme bleeds into this one and vice versa.
+ * top of main.css, so nothing from that theme bleeds into this one and
+ * vice versa - even though the two now look far more alike than not (see
+ * below), they're still two separate pages loading two separate files.
  *
- * A second fictional-insurer narrative alongside the SDK subsite, same
- * flat/square/uppercase/Roboto structural language as sdk-theme.css (see
- * that file's own header comment for where that language itself comes
- * from) - copied wholesale on purpose rather than factored into a shared
- * base stylesheet, since the two subsites are meant to read as genuinely
- * separate companies, not two skins of one obviously-shared template.
- * The palette: TQK (TRUSTEQ-Krankenkasse) uses this demo's own actual
- * TRUSTEQ colors - the wallet's default accent (#006EDF, see
- * eudi_web_wallet/branding.json) for interactive UI, and the real TRUSTEQ
- * logo's own sampled navy/gold (#003366/#AE9966, see public/img/
- * tqk-logo.svg) for the footer band and the gold accent border on every
- * hero/card - rather than SDK's real-insurer blue/orange, since TRUSTEQ
- * is this project's own brand, not a real unrelated company standing in
- * for one.
+ * A second fictional-insurer narrative alongside the SDK subsite - but
+ * unlike SDK (deliberately built to read as a real light corporate portal,
+ * see sdk-theme.css's own header comment for that whole story), TQK is
+ * TRUSTEQ's OWN brand, so this stylesheet intentionally does NOT share
+ * SDK's flat/square/uppercase/Roboto structural language at all. Instead
+ * it's styled to belong with the rest of TRUSTEQ's own product surfaces -
+ * the wallet (eudi_web_wallet/static/style.css) most of all, but also
+ * this very app's own neutral/DEMO_BRAND-agnostic theme (../css/main.css)
+ * and its header (../templates/fragments/header.html): Inter, rounded
+ * corners, soft shadows, sentence case, a fixed dark palette with no
+ * light alternate. Every color/radius/shadow value below is read
+ * directly off one of those two files, not independently invented -
+ * see each section's own comment for exactly which one.
  *
- * Unlike SDK (styled to read as a real light corporate portal, see
- * sdk-theme.css), this subsite defaults to DARK, not light - TRUSTEQ's
- * own product surfaces (the dashboard, the wallet) are dark by default
- * too, and TQK is meant to visually belong with them rather than imitate
- * an external insurer's real site the way SDK deliberately does. The dark
- * palette below (:root[data-theme="dark"]) is the wallet's own
- * bg/card/text/muted tokens (#0f1220/#1a1e33/#e8eaf6/#9aa0c3, see
- * eudi_web_wallet/static/style.css), not independently invented. The
- * light `:root` block still exists and is fully usable - it's what this
- * subsite looked like before this default flipped, kept as the opt-in
- * alternate via the same footer toggle SDK uses - see tqk-ehic-landing.html/
- * tqk-ehic-offer.html's `data-default-theme="dark"` attribute and
- * public/js/theme-restore.js's now brand-aware default-theme logic for
- * how the flip itself works without touching SDK's own default at all.
+ * Fixed dark, full stop - no light mode, no toggle, no
+ * prefers-color-scheme. The wallet and this app's own neutral theme
+ * don't offer one either; TQK is meant to look like it belongs to that
+ * same product family, not like a second reskin of the SDK subsite's
+ * "light by default, dark as an opt-in extra" pattern. --accent is the
+ * wallet's own default branding.json color (#006EDF); --bg/--surface/
+ * --text/--muted/--border are that same file's exact bg/card/text/muted
+ * tokens (only --border, absent from branding.json itself, comes from
+ * main.css instead, which uses the identical #2a2f4a). --gold is the
+ * real TRUSTEQ logo's other sampled color (see public/img/tqk-logo.svg),
+ * used sparingly as one signature accent (the hero-icon ring below), not
+ * a second UI color.
  *
  * Written mobile-first throughout: every base rule below is the phone-
  * width layout, and the one @media (min-width: 700px) block at the bottom
  * only adds room/rearranges - it never has to fight a desktop assumption
  * baked into the base rules the way a max-width retrofit would.
  *
- * Font: Roboto, self-hosted - same two files sdk-theme.css already uses
- * (see that file's own comment) - kept identical here too, since the
- * font is part of the shared structural language, not the per-brand
- * palette.
+ * Font: Inter, self-hosted - same two files main.css/the wallet already
+ * use (see either one's own comment), not Roboto - the one part of SDK's
+ * structural language this deliberately does NOT reuse.
  */
 
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'Inter';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('/pid-issuer/public/fonts/roboto-latin.woff2') format('woff2');
+  src: url('/pid-issuer/public/fonts/inter-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'Inter';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('/pid-issuer/public/fonts/roboto-latin-ext.woff2') format('woff2');
+  src: url('/pid-issuer/public/fonts/inter-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* The opt-in LIGHT alternate (see this file's header comment - dark is now
-   the default, via data-default-theme="dark" on the two TQK templates).
-   --accent/--accent-dark are the wallet's own default branding.json
-   colors (#006EDF/#021529) - "the wallet's color scheme," reused
-   directly rather than re-derived, since the wallet is where this
-   project's actual TRUSTEQ identity already lives day to day. --heading
-   reuses --accent rather than a separate lighter shade (unlike SDK's
-   own --heading, a distinct lighter blue) - the wallet's own scheme
-   doesn't define a second shade for this role, so this stays faithful
-   to it rather than inventing one. --footer-bg is the real TRUSTEQ
-   logo's own sampled navy (see tqk-logo.svg) - ties the footer band
-   visually to the logo above it, the same relationship SDK's own
-   --footer-bg has to that subsite's header. --gold is that same logo's
-   other sampled color, used below for the one signature accent
-   (.tqk-hero/.tqk-card's top border) rather than a whole second UI
-   color - shared by both themes below since it's identical in either.
-   --radius/--shadow collapse to nothing, same reasoning as
-   sdk-theme.css's identical tokens. */
 :root {
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --text: #1a202c;
-  --muted: #6b7280;
-  --border: #e2e4e9;
-  --accent: #006EDF;
-  --accent-dark: #021529;
-  --accent-tint: #e6f1fd;
-  --heading: #006EDF;
-  --header-bg: #efefef;
-  --footer-bg: #003366;
-  --gold: #AE9966;
-  --shadow: none;
-  --radius: 0;
-}
-
-/* The DEFAULT theme for this subsite (see this file's header comment) -
-   not just a toggle destination the way sdk-theme.css's identical-looking
-   block is. Full wallet-equivalent palette (bg/surface/text/muted/border -
-   see eudi_web_wallet/static/style.css's own :root for the source of
-   these exact values), not just the header/heading touch-ups SDK's own
-   dark block gets, since SDK's dark mode is a rarely-used opt-in extra
-   while this is what most visitors to this subsite actually see.
-   --accent-tint gets its own dark-appropriate override here (a dark
-   desaturated blue rather than the light block's pale tint, which would
-   read as a glaring light patch against this background) - every other
-   badge/icon background in this file uses it. --footer-bg/--accent/
-   --gold are left alone - the real logo's navy is already dark enough to
-   work in both themes, and blue/gold read the same regardless of
-   background. */
-:root[data-theme="dark"] {
   --bg: #0f1220;
   --surface: #1a1e33;
   --text: #e8eaf6;
   --muted: #9aa0c3;
   --border: #2a2f4a;
+  --accent: #006edf;
+  --accent-dark: #021529;
   --accent-tint: #16243a;
-  --header-bg: #0b0e1c;
-  --heading: #4ea1ff;
+  --gold: #AE9966;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
-:root[data-theme="dark"] .tqk-deep-link { background: #0e1626; }
 
 .tqk-ehic { box-sizing: border-box; }
 .tqk-ehic *, .tqk-ehic *::before, .tqk-ehic *::after { box-sizing: inherit; }
@@ -129,16 +80,16 @@
 /* Safety net for every hidden/reveal toggle on this subsite (shared
    public/js/identity-verify.js sets/clears the `hidden` attribute on
    #identity-verify-step/#issue-step/#identity-verify-progress - see that
-   file) - same bug/fix as sdk-theme.css's identical rule: several of
-   those elements' own classes (.tqk-card, .tqk-verify-progress) set
-   `display` themselves, and an author stylesheet's `display` declaration
-   beats the UA stylesheet's `[hidden] { display: none }` regardless of
-   selector specificity, since origin outranks specificity in the cascade. */
+   file) - several of those elements' own classes (.tqk-card,
+   .tqk-verify-progress) set `display` themselves, and an author
+   stylesheet's `display` declaration beats the UA stylesheet's
+   `[hidden] { display: none }` regardless of selector specificity, since
+   origin outranks specificity in the cascade. */
 .tqk-ehic [hidden] { display: none !important; }
 
 body.tqk-ehic {
   margin: 0;
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -148,53 +99,62 @@ body.tqk-ehic {
 }
 
 /* ---------- disclaimer banner ---------- */
-/* Same unmissable, full-width bar as the SDK subsite's own .sdk-banner -
-   TQK is a fictional company too (there's no real "TRUSTEQ-Krankenkasse"
-   insurer), so the same "this is a demo" framing applies, just without
-   the real-external-company non-affiliation angle SDK's own banner text
-   carries - see docs/governance/trust-and-compliance.md. */
+/* A rounded, accent-bordered card sitting in the page flow (not a
+   full-width sticky bar the way SDK's .sdk-banner is) - same shape/
+   treatment as the wallet's own .flash (eudi_web_wallet/static/
+   style.css), reused directly rather than re-derived, so "this is a
+   demo" reads as one more card in this app's own visual language
+   instead of a bolted-on corporate disclaimer strip. TQK is a fictional
+   company too (there's no real "TRUSTEQ-Krankenkasse" insurer), so the
+   claim here differs from SDK's own banner text (real-company
+   non-affiliation vs. this company simply not existing) - see
+   docs/governance/trust-and-compliance.md. */
 .tqk-banner {
-  background: #fdf3d7;
-  color: #7a5b00;
-  border-bottom: 1px solid #f0d28a;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  color: var(--text);
   text-align: center;
   font-size: 13px;
   line-height: 1.5;
-  padding: 10px 16px;
+  padding: 12px 16px;
+  margin: 16px 16px 0;
 }
 
 /* ---------- header ---------- */
-.tqk-header-utility {
-  height: 64px;
-  background: var(--header-bg);
-}
+/* One simple band - brand mark, full stop - not SDK's two-tier utility-
+   strip-then-nav structure (see sdk-theme.css). Same shape as this app's
+   own persistent header (fragments/header.html/main.css's .site-header):
+   a bottom divider plus a soft shadow, content capped at .tqk-main's own
+   width so the two visually line up. */
 .tqk-nav {
   display: flex;
   align-items: center;
-  padding: 28px 16px 32px;
+  padding: 18px 16px;
   max-width: 720px;
   margin: 0 auto;
   width: 100%;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 16px rgba(0, 0, 0, 0.35);
 }
 .tqk-brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   text-decoration: none;
   color: var(--text);
   min-width: 0;
 }
-.tqk-logo { height: 30px; width: auto; display: block; flex-shrink: 0; }
+.tqk-logo { height: 28px; width: auto; display: block; flex-shrink: 0; }
 .tqk-brand-name {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-html.is-embedded .tqk-header-utility { display: none; }
-html.is-embedded .tqk-nav { padding: 12px 16px; }
+html.is-embedded .tqk-nav { padding: 12px 16px; box-shadow: none; }
 html.is-embedded .tqk-brand-name { display: none; }
 
 /* ---------- layout shell ---------- */
@@ -206,23 +166,26 @@ html.is-embedded .tqk-brand-name { display: none; }
   padding: 8px 16px 48px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 20px;
 }
 .tqk-main--narrow { max-width: 480px; }
 
 #issue-step {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 20px;
 }
 
 /* ---------- step indicator ---------- */
+/* Pill-shaped, matching main.css's own role-badge/credential-card-badge
+   pill language (border-radius: 999px) rather than SDK's square flat
+   badges. */
 .tqk-steps {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 2px 4px 4px;
+  padding: 4px 4px 0;
 }
 /* .step/.step-num/.step-label/.step--active/.step-sep are deliberately
    NEUTRAL, not .tqk-step* - see sdk-theme.css's identical rule for why
@@ -238,8 +201,9 @@ html.is-embedded .tqk-brand-name { display: none; }
 .step-num {
   width: 22px;
   height: 22px;
-  border-radius: 0;
-  background: var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
@@ -249,7 +213,7 @@ html.is-embedded .tqk-brand-name { display: none; }
   flex-shrink: 0;
 }
 .step-label { font-size: 12.5px; font-weight: 600; }
-.step--active .step-num { background: var(--accent); color: #fff; }
+.step--active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
 .step--active .step-label { color: var(--text); }
 .step-sep {
   width: 20px;
@@ -263,9 +227,10 @@ html.is-embedded .tqk-brand-name { display: none; }
   margin: -4px 0 0 !important;
   font-size: 11.5px !important;
   font-weight: 600;
-  color: var(--accent-dark);
-  background: var(--accent-tint);
-  border-radius: 0;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
   padding: 4px 12px;
   display: inline-block;
   max-width: none !important;
@@ -328,18 +293,16 @@ html.is-embedded .tqk-brand-name { display: none; }
   text-align: center;
   font-size: 13px;
   font-weight: 700;
-  color: #1a7a4c;
+  color: #52d17c;
 }
 
 /* ---------- hero / QR-offer card ---------- */
-/* border-top uses --gold directly (not var(--border), which stays the
-   neutral divider color on every other edge) - the one place this
-   subsite echoes the real TRUSTEQ logo's own gold swoosh underline (see
-   tqk-logo.svg), on the two surfaces a visitor actually looks at. */
+/* Rounded, soft-shadowed surface - same shape as the wallet's own
+   .card/.cred-card and this app's own .credential-card (main.css), not
+   SDK's flat bordered rectangle. */
 .tqk-hero, .tqk-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 3px solid var(--gold);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 28px 20px;
@@ -349,12 +312,17 @@ html.is-embedded .tqk-brand-name { display: none; }
   align-items: center;
   gap: 14px;
 }
+/* The one place this subsite echoes the real TRUSTEQ logo's own gold -
+   a ring around the hero icon, not a flat stripe across a rounded card
+   (which doesn't sit well against a border-radius - see the SDK-style
+   version this replaced). */
 .tqk-hero-icon {
   width: 56px;
   height: 56px;
-  border-radius: 0;
+  border-radius: 999px;
   background: var(--accent-tint);
   color: var(--accent);
+  border: 2px solid var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -364,9 +332,7 @@ html.is-embedded .tqk-brand-name { display: none; }
   font-size: 24px;
   font-weight: 700;
   line-height: 1.25;
-  color: var(--heading);
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
+  color: var(--text);
 }
 .tqk-hero p {
   margin: 0;
@@ -379,20 +345,21 @@ html.is-embedded .tqk-brand-name { display: none; }
 .tqk-hero-note { font-size: 12.5px !important; color: var(--muted); }
 
 /* ---------- buttons ---------- */
+/* Sentence case, rounded, solid accent fill - the wallet's own button/
+   .btn (static/style.css) almost verbatim, not SDK's uppercase flat
+   rectangle. */
 .tqk-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   border: none;
-  border-radius: 0;
-  padding: 0 28px;
-  height: 52px;
+  border-radius: var(--radius-sm);
+  padding: 0 24px;
+  height: 48px;
   font-family: inherit;
   font-weight: 600;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-size: 15px;
   cursor: pointer;
   text-decoration: none;
   transition: background 120ms ease;
@@ -432,7 +399,7 @@ html.is-embedded .tqk-brand-name { display: none; }
 .tqk-feature-icon {
   width: 36px;
   height: 36px;
-  border-radius: 0;
+  border-radius: 999px;
   background: var(--accent-tint);
   color: var(--accent);
   display: flex;
@@ -444,7 +411,7 @@ html.is-embedded .tqk-brand-name { display: none; }
   margin: 0 0 4px;
   font-size: 15px;
   font-weight: 700;
-  color: var(--heading);
+  color: var(--text);
 }
 .tqk-feature p {
   margin: 0;
@@ -460,9 +427,7 @@ html.is-embedded .tqk-brand-name { display: none; }
   font-size: 22px;
   font-weight: 700;
   line-height: 1.25;
-  color: var(--heading);
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
+  color: var(--text);
 }
 .tqk-card > p {
   margin: 0;
@@ -472,8 +437,7 @@ html.is-embedded .tqk-brand-name { display: none; }
 }
 .tqk-qr-wrap {
   background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   padding: 14px;
   display: inline-flex;
 }
@@ -493,9 +457,9 @@ html.is-embedded .tqk-brand-name { display: none; }
 .tqk-deep-link {
   display: block;
   word-break: break-all;
-  background: #f4f5f7;
+  background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   color: var(--text);
   padding: 10px 12px;
   font-size: 12px;
@@ -506,93 +470,38 @@ html.is-embedded .tqk-brand-name { display: none; }
 .tqk-back a:hover { color: var(--accent); }
 
 /* ---------- footer ---------- */
-/* Same icon-row/legal-strip/disclaimer structure and exact numbers as
-   sdk-theme.css's own footer (see that file's comment for where they
-   come from) - only the band's own color differs (--footer-bg, the real
-   TRUSTEQ logo's navy, set above), everything else about the shape is
-   deliberately identical. */
-.tqk-footer { margin-top: 64px; }
-.tqk-footer-band {
-  position: relative;
-  background: var(--footer-bg);
-  padding: 32px 16px 20px;
+/* A single slim disclaimer line, not SDK's full navy footer band with a
+   theme toggle, social-icon row, and legal-link strip - there's no
+   toggle to anchor here any more (this subsite is fixed dark, see this
+   file's header comment), and a heavy decorative footer doesn't belong
+   next to the wallet's own minimal chrome. Same shape as this app's own
+   .compatibility-note (main.css) and the verifier app's equivalent - a
+   border-top plus centered muted text, reused directly so this subsite's
+   footer reads as "this app's footer," not a bespoke one. */
+.tqk-footer {
+  margin-top: 40px;
+  border-top: 1px solid var(--border);
+  padding: 20px 16px 32px;
   text-align: center;
 }
-.tqk-theme-toggle {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 3px solid var(--bg);
-  background: var(--footer-bg);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-}
-.tqk-theme-toggle svg { width: 18px; height: 18px; }
-.tqk-theme-toggle:hover { filter: brightness(1.15); }
-.tqk-footer-icons {
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  row-gap: 14px;
-  margin: 0 0 28px;
-  padding: 0;
-  list-style: none;
-  flex-wrap: wrap;
-}
-.tqk-footer-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: #b7c2d6;
-  font-size: 11px;
-}
-.tqk-footer-icon svg { width: 20px; height: 20px; }
-.tqk-footer-legal {
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 13px;
-  color: #b7c2d6;
-}
-.tqk-footer-build { color: #8b98b3; }
-.tqk-footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
-.tqk-footer-links span { color: #b7c2d6; cursor: default; }
 .tqk-footer-disclaimer {
-  max-width: 900px;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 20px 24px 28px;
-  text-align: center;
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--muted);
 }
 
 /* ---------- wider screens (mobile-first: this only ADDS room) ---------- */
 @media (min-width: 700px) {
-  .tqk-nav { padding: 32px 24px 36px; }
-  .tqk-main { padding: 16px 24px 64px; gap: 32px; }
-  #issue-step { gap: 32px; }
+  .tqk-nav { padding: 20px 24px; }
+  .tqk-main { padding: 16px 24px 64px; gap: 24px; }
+  #issue-step { gap: 24px; }
   .tqk-hero { padding: 44px 48px; }
   .tqk-hero h1 { font-size: 30px; }
   .tqk-hero p { font-size: 16px; }
   .tqk-card { padding: 40px 48px; }
   .tqk-features { flex-direction: row; }
   .tqk-feature { flex: 1 1 0; }
-  .tqk-footer-band { padding: 44px 24px 20px; }
-  .tqk-footer-icons { gap: 32px; row-gap: 0; }
-  .tqk-footer-legal { gap: 12px; }
 }
 
 /* Click-to-enlarge for any QR code on the page (.qr-zoom-target - see

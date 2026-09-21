@@ -1,18 +1,19 @@
 /*
- * Light/dark toggle for the SDK/EHIC and TQK/EHIC subsites' footer button
- * (see fragments/sdk-chrome.html's sdkFooter and fragments/tqk-chrome.html's
- * tqkFooter) - same mechanism as eudi_web_login's own toggleTheme()/
- * syncToggleIcon(): sets document.documentElement.dataset.theme, which
- * each subsite's own :root[data-theme="dark"] block reads, and remembers
- * the choice in localStorage (local to whichever subsite you're on, a
- * pure display preference with no reason to ever reach the server - same
- * key scheme as the client site's own 'client-site-theme', just named for
- * this app instead).
+ * Light/dark toggle for the SDK/EHIC subsite's footer button (see
+ * fragments/sdk-chrome.html's sdkFooter) - same mechanism as
+ * eudi_web_login's own toggleTheme()/syncToggleIcon(): sets
+ * document.documentElement.dataset.theme, which sdk-theme.css's
+ * :root[data-theme="dark"] block reads, and remembers the choice in
+ * localStorage (a pure display preference with no reason to ever reach
+ * the server - same key scheme as the client site's own
+ * 'client-site-theme', just named for this app instead).
  *
- * Shared verbatim between both subsites via the neutral #theme-toggle id
- * (each page's own class on that same element - .sdk-theme-toggle/
- * .tqk-theme-toggle - is what actually colors it; this file only ever
- * touches the id).
+ * SDK only - the TQK subsite doesn't load this file at all (it's fixed
+ * dark, no toggle button exists there - see tqk-theme.css's header
+ * comment). Reads the neutral #theme-toggle id (SDK's own
+ * .sdk-theme-toggle class is what actually colors it; this file only
+ * ever touches the id) - kept neutral rather than sdk-prefixed on the
+ * off chance a future brand wants this exact toggle again.
  *
  * The button's own click handler is wired here via addEventListener
  * rather than an onclick="" attribute in the template - this app's CSP

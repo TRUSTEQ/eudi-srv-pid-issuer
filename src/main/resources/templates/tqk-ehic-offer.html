@@ -1,17 +1,13 @@
 <!doctype html>
-<!-- data-default-theme="dark" - see tqk-ehic-landing.html's identical
-     attribute for why. -->
-<html lang="de" data-default-theme="dark" xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/public/css/tqk-theme.css}">
     <link rel="icon" type="image/svg+xml" th:href="@{/public/img/tqk-favicon.svg}">
+    <!-- No theme-restore.js here (unlike the SDK subsite) - see
+         tqk-ehic-landing.html's identical comment. -->
     <script th:src="@{/public/js/embed-detect.js}"></script>
-    <!-- Re-applies a stored light/dark override before first paint - see
-         tqk-ehic-landing.html's identical tag for why this is an external
-         file rather than inline (this app's CSP has no 'unsafe-inline'). -->
-    <script th:src="@{/public/js/theme-restore.js}"></script>
     <title th:text="#{tqk-ehic-brand-name} + ' ' + #{tqk-ehic-title-suffix}">TRUSTEQ-Krankenkasse (EUDI Wallet Demo)</title>
 </head>
 <body class="tqk-ehic">
@@ -52,6 +48,5 @@
 </main>
 <div th:replace="~{fragments/tqk-chrome :: tqkFooter}"></div>
 <script th:src="@{/public/js/qr-zoom.js}"></script>
-<script th:src="@{/public/js/theme-toggle.js}"></script>
 </body>
 </html>
