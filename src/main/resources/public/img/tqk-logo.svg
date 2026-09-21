@@ -1,0 +1,13 @@
+<!-- TQK (TRUSTEQ-Krankenkasse) wordmark - a fictional insurer, generated
+     for this demo rather than a real company's asset (contrast the SDK
+     subsite's logo, which uses a real insurer's actual file - see
+     docs/governance/trust-and-compliance.md). Colors are sampled directly
+     from the real TRUSTEQ logo (../trusteq-logo.png, also used by the
+     wallet/dashboard) - #003366 navy, #AE9966 gold - so this reads as
+     "the same company's insurance arm," not an unrelated invented mark. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118 68">
+  <text x="0" y="46" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="700" fill="#003366">T</text>
+  <text x="31" y="46" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="700" fill="#003366">Q</text>
+  <text x="63" y="46" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="700" fill="#AE9966">K</text>
+  <path d="M2 54 Q59 66 116 50" stroke="#AE9966" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</svg>

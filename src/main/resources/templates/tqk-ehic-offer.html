@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/public/css/tqk-theme.css}">
+    <link rel="icon" type="image/svg+xml" th:href="@{/public/img/tqk-favicon.svg}">
+    <script th:src="@{/public/js/embed-detect.js}"></script>
+    <!-- Re-applies a stored light/dark override before first paint - see
+         tqk-ehic-landing.html's identical tag for why this is an external
+         file rather than inline (this app's CSP has no 'unsafe-inline'). -->
+    <script th:src="@{/public/js/theme-restore.js}"></script>
+    <title th:text="#{tqk-ehic-brand-name} + ' ' + #{tqk-ehic-title-suffix}">TRUSTEQ-Krankenkasse (EUDI Wallet Demo)</title>
+</head>
+<body class="tqk-ehic">
+<div th:replace="~{fragments/tqk-chrome :: tqkHeader}"></div>
+<main class="tqk-main tqk-main--narrow">
+    <!--/* Just Identität/Karte - see tqkSteps in fragments/tqk-chrome.html
+           for why this never had a third "saved to wallet" step at all
+           (no way to know when/whether a wallet elsewhere finishes). */-->
+    <div th:replace="~{fragments/tqk-chrome :: tqkSteps(2)}"></div>
+    <!--/*@thymesVar id="uri" type="kotlin.String"*/-->
+    <!--/*@thymesVar id="qrCode" type="kotlin.String"*/-->
+    <!--/*@thymesVar id="qrCodeMediaType" type="kotlin.String"*/-->
+    <!--/* Same single, focused card as the landing page - just the QR code
+           and the raw link behind a disclosure for anyone who'd rather copy
+           it. No "Open with wallet" deep-link button here: same reasoning
+           as the SDK subsite's own sdk-ehic-offer.html - this app's wallet
+           is a plain website, not a registered eu-eaa-offer:// handler. No
+           status polling either: this is the ISSUER side, with no way of
+           knowing when a wallet elsewhere finishes fetching the
+           credential. */-->
+    <section class="tqk-card">
+        <h1 th:text="#{tqk-ehic-offer-hero-heading}">Scan &amp; receive your card</h1>
+        <p th:text="#{tqk-ehic-offer-intro}">Scan the QR code with your EUDI Wallet app.</p>
+
+        <div class="tqk-qr-wrap">
+            <img class="tqk-qr qr-zoom-target" th:src="'data:' + ${qrCodeMediaType} + ';base64,' + ${qrCode}" alt="" th:alt="#{qr-code}"/>
+        </div>
+
+        <details class="tqk-reveal">
+            <summary th:text="#{tqk-ehic-copy-link-summary}">Or copy the link below</summary>
+            <code class="tqk-deep-link" th:text="${uri}">https://example.org</code>
+        </details>
+
+        <p class="tqk-back">
+            <a th:href="@{/issuer/tqk/ehic}" th:text="'← ' + #{tqk-ehic-back-link}">← Back</a>
+        </p>
+    </section>
+</main>
+<div th:replace="~{fragments/tqk-chrome :: tqkFooter}"></div>
+<script th:src="@{/public/js/qr-zoom.js}"></script>
+<script th:src="@{/public/js/theme-toggle.js}"></script>
+</body>
+</html>

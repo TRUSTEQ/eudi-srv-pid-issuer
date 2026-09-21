@@ -1,0 +1,8 @@
+<!-- TQK favicon: the "T" cropped out of tqk-logo.svg's own wordmark (exact
+     bbox via getBBox(), not eyeballed), centered in a square viewBox with
+     padding - same approach as sdk-favicon.svg, for the same reason: the
+     full wordmark is too wide/detailed to read at 16-32px, a single bold
+     letter does. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-19 -6 71 71">
+  <text x="0" y="46" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="700" fill="#003366">T</text>
+</svg>

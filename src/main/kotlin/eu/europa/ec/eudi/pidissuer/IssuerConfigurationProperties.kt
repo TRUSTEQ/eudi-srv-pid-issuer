@@ -57,15 +57,18 @@ internal data class IssuerMetadataProperties(
 /**
  * The demo-wide `DEMO_BRAND` toggle (see the top-level demo.env.example), threaded through to
  * [eu.europa.ec.eudi.pidissuer.adapter.input.web.IssuerUi]'s templates so they can present this issuer
- * either skinned as the SDK (Süddeutsche Krankenkasse) health-insurance demo narrative, or with today's
- * generic, unbranded TRUSTEQ look. Purely presentational - never affects which credentials this issuer
- * actually supports or issues.
+ * skinned as one of two fictional health-insurance demo narratives - SDK (Süddeutsche Krankenkasse) or
+ * TQK (TRUSTEQ-Krankenkasse) - or with today's generic, unbranded TRUSTEQ look. Purely presentational -
+ * never affects which credentials this issuer actually supports or issues, and both subsites' own routes
+ * stay reachable regardless of `mode` (see IssuerUi.kt's router) - this only decides which one `/`
+ * redirects to by default.
  */
 @ConfigurationProperties("demo.brand")
 data class DemoBrandProperties(
     val mode: String = "sdk",
 ) {
     val sdk: Boolean get() = mode == "sdk"
+    val tqk: Boolean get() = mode == "tqk"
 }
 
 @ConfigurationProperties("issuer.sd-jwt-vc")
