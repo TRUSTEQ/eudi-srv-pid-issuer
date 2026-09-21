@@ -10,13 +10,29 @@
  * from) - copied wholesale on purpose rather than factored into a shared
  * base stylesheet, since the two subsites are meant to read as genuinely
  * separate companies, not two skins of one obviously-shared template.
- * The one real difference is the palette: TQK (TRUSTEQ-Krankenkasse) uses
- * this demo's own actual TRUSTEQ colors - the wallet's default accent
- * (#006EDF/#021529, see eudi_web_wallet/branding.json) for interactive
- * UI, and the real TRUSTEQ logo's own sampled navy/gold (#003366/#AE9966,
- * see public/img/tqk-logo.svg) for the logo and footer band - rather than
- * SDK's real-insurer blue/orange, since TRUSTEQ is this project's own
- * brand, not a real unrelated company standing in for one.
+ * The palette: TQK (TRUSTEQ-Krankenkasse) uses this demo's own actual
+ * TRUSTEQ colors - the wallet's default accent (#006EDF, see
+ * eudi_web_wallet/branding.json) for interactive UI, and the real TRUSTEQ
+ * logo's own sampled navy/gold (#003366/#AE9966, see public/img/
+ * tqk-logo.svg) for the footer band and the gold accent border on every
+ * hero/card - rather than SDK's real-insurer blue/orange, since TRUSTEQ
+ * is this project's own brand, not a real unrelated company standing in
+ * for one.
+ *
+ * Unlike SDK (styled to read as a real light corporate portal, see
+ * sdk-theme.css), this subsite defaults to DARK, not light - TRUSTEQ's
+ * own product surfaces (the dashboard, the wallet) are dark by default
+ * too, and TQK is meant to visually belong with them rather than imitate
+ * an external insurer's real site the way SDK deliberately does. The dark
+ * palette below (:root[data-theme="dark"]) is the wallet's own
+ * bg/card/text/muted tokens (#0f1220/#1a1e33/#e8eaf6/#9aa0c3, see
+ * eudi_web_wallet/static/style.css), not independently invented. The
+ * light `:root` block still exists and is fully usable - it's what this
+ * subsite looked like before this default flipped, kept as the opt-in
+ * alternate via the same footer toggle SDK uses - see tqk-ehic-landing.html/
+ * tqk-ehic-offer.html's `data-default-theme="dark"` attribute and
+ * public/js/theme-restore.js's now brand-aware default-theme logic for
+ * how the flip itself works without touching SDK's own default at all.
  *
  * Written mobile-first throughout: every base rule below is the phone-
  * width layout, and the one @media (min-width: 700px) block at the bottom
@@ -46,7 +62,9 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* --accent/--accent-dark are the wallet's own default branding.json
+/* The opt-in LIGHT alternate (see this file's header comment - dark is now
+   the default, via data-default-theme="dark" on the two TQK templates).
+   --accent/--accent-dark are the wallet's own default branding.json
    colors (#006EDF/#021529) - "the wallet's color scheme," reused
    directly rather than re-derived, since the wallet is where this
    project's actual TRUSTEQ identity already lives day to day. --heading
@@ -56,8 +74,12 @@
    to it rather than inventing one. --footer-bg is the real TRUSTEQ
    logo's own sampled navy (see tqk-logo.svg) - ties the footer band
    visually to the logo above it, the same relationship SDK's own
-   --footer-bg has to that subsite's header. --radius/--shadow collapse
-   to nothing, same reasoning as sdk-theme.css's identical tokens. */
+   --footer-bg has to that subsite's header. --gold is that same logo's
+   other sampled color, used below for the one signature accent
+   (.tqk-hero/.tqk-card's top border) rather than a whole second UI
+   color - shared by both themes below since it's identical in either.
+   --radius/--shadow collapse to nothing, same reasoning as
+   sdk-theme.css's identical tokens. */
 :root {
   --bg: #ffffff;
   --surface: #ffffff;
@@ -70,24 +92,33 @@
   --heading: #006EDF;
   --header-bg: #efefef;
   --footer-bg: #003366;
+  --gold: #AE9966;
   --shadow: none;
   --radius: 0;
 }
 
-/* Dark-mode variant - same structure as sdk-theme.css's own block (see
-   its comment for the full reasoning: fixed light by default regardless
-   of prefers-color-scheme, only switches via the explicit footer toggle).
-   --heading gets a lighter blue for dark-background contrast, same as
-   SDK's own dark-mode --heading override; --footer-bg is left alone -
-   the real logo's navy is already dark enough to work in both themes,
-   same as SDK's own footer-bg needing no dark-mode override either. */
+/* The DEFAULT theme for this subsite (see this file's header comment) -
+   not just a toggle destination the way sdk-theme.css's identical-looking
+   block is. Full wallet-equivalent palette (bg/surface/text/muted/border -
+   see eudi_web_wallet/static/style.css's own :root for the source of
+   these exact values), not just the header/heading touch-ups SDK's own
+   dark block gets, since SDK's dark mode is a rarely-used opt-in extra
+   while this is what most visitors to this subsite actually see.
+   --accent-tint gets its own dark-appropriate override here (a dark
+   desaturated blue rather than the light block's pale tint, which would
+   read as a glaring light patch against this background) - every other
+   badge/icon background in this file uses it. --footer-bg/--accent/
+   --gold are left alone - the real logo's navy is already dark enough to
+   work in both themes, and blue/gold read the same regardless of
+   background. */
 :root[data-theme="dark"] {
-  --bg: #0b1220;
-  --surface: #121b2e;
-  --text: #e6e9f0;
-  --muted: #93a0b8;
-  --border: #29344a;
-  --header-bg: #0b1220;
+  --bg: #0f1220;
+  --surface: #1a1e33;
+  --text: #e8eaf6;
+  --muted: #9aa0c3;
+  --border: #2a2f4a;
+  --accent-tint: #16243a;
+  --header-bg: #0b0e1c;
   --heading: #4ea1ff;
 }
 :root[data-theme="dark"] .tqk-deep-link { background: #0e1626; }
@@ -301,9 +332,14 @@ html.is-embedded .tqk-brand-name { display: none; }
 }
 
 /* ---------- hero / QR-offer card ---------- */
+/* border-top uses --gold directly (not var(--border), which stays the
+   neutral divider color on every other edge) - the one place this
+   subsite echoes the real TRUSTEQ logo's own gold swoosh underline (see
+   tqk-logo.svg), on the two surfaces a visitor actually looks at. */
 .tqk-hero, .tqk-card {
   background: var(--surface);
   border: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 28px 20px;
