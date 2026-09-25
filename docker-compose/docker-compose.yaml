@@ -39,7 +39,7 @@ services:
     # controls what actually gets built either way; only the tag name no
     # longer carries the version suffix, to match this demo's :latest-only
     # convention everywhere else.
-    image: ghcr.io/leo-sus-teq/eudi-issuer-keycloak:latest
+    image: ghcr.io/trusteq/eudi-issuer-keycloak:latest
     container_name: keycloak
     command:
       - start-dev
@@ -100,7 +100,7 @@ services:
         VERSION: ${STATUS_LIST_VERSION}
     # See keycloak's own `image:` comment above - same reasoning, same
     # pull-then-build-as-fallback behavior, same tag-name simplification.
-    image: ghcr.io/leo-sus-teq/eudi-issuer-status-list:latest
+    image: ghcr.io/trusteq/eudi-issuer-status-list:latest
     container_name: status-list
     environment:
       API_key: aaa-bbb-ccc
@@ -124,7 +124,7 @@ services:
     # never` override anymore, since "not built locally yet" is now the
     # normal, successful case (see ../../push-images.sh and the top-level
     # README's GHCR section), not something to hard-refuse.
-    image: ghcr.io/leo-sus-teq/eudi-issuer-pidissuer:latest
+    image: ghcr.io/trusteq/eudi-issuer-pidissuer:latest
     container_name: pid-issuer
     depends_on:
       keycloak:
