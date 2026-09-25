@@ -90,7 +90,8 @@
                (generate-credentials-offer-form.html) still has one, for
                anyone who does want to type in specific demo data. */-->
         <form method="post" th:action="@{/issuer/sdk/ehic/generate}">
-            <button type="submit" class="sdk-btn sdk-btn--primary sdk-btn--block" th:text="#{sdk-ehic-primary-btn}">Get your card now</button>
+            <button type="submit" class="sdk-btn sdk-btn--primary sdk-btn--block btn-loading-on-submit"
+                    th:attr="data-loading-text=#{sdk-ehic-generating-btn}" th:text="#{sdk-ehic-primary-btn}">Get your card now</button>
         </form>
         <p class="sdk-hero-note" th:text="#{sdk-ehic-left-note}">No real ID is needed for this demo.</p>
     </section>
@@ -120,6 +121,7 @@
 </main>
 <div th:replace="~{fragments/sdk-chrome :: sdkFooter}"></div>
 <script th:src="@{/public/js/identity-verify.js}"></script>
+<script th:src="@{/public/js/form-loading.js}"></script>
 <script th:src="@{/public/js/theme-toggle.js}"></script>
 </body>
 </html>

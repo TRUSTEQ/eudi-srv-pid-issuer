@@ -431,6 +431,23 @@ html.is-embedded .sdk-brand-name { display: none; }
 .sdk-btn--primary:active { opacity: 0.9; }
 .sdk-btn--block { display: flex; width: 100%; }
 
+/* Loading state for any .btn-loading-on-submit button (see
+   public/js/form-loading.js) - .sdk-btn's own `gap: 8px` already spaces
+   this from the re-labeled text next to it, so no extra margin needed
+   here. Reuses the sdk-spin keyframe already defined above for
+   .sdk-verify-progress li.pending. */
+.sdk-btn.btn-loading-on-submit:disabled { cursor: wait; opacity: 0.85; }
+.btn-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sdk-spin 700ms linear infinite;
+  flex-shrink: 0;
+}
+
 .sdk-link {
   color: var(--accent);
   font-weight: 600;

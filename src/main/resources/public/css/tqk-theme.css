@@ -372,6 +372,22 @@ html.is-embedded .tqk-brand-name { display: none; }
 .tqk-btn--primary:active { opacity: 0.9; }
 .tqk-btn--block { display: flex; width: 100%; }
 
+/* Loading state for any .btn-loading-on-submit button (see
+   public/js/form-loading.js) - .tqk-btn's own `gap: 8px` already spaces
+   this from the re-labeled text next to it. Reuses the tqk-spin keyframe
+   already defined above for .tqk-verify-progress li.pending. */
+.tqk-btn.btn-loading-on-submit:disabled { cursor: wait; opacity: 0.85; }
+.btn-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: tqk-spin 700ms linear infinite;
+  flex-shrink: 0;
+}
+
 .tqk-link {
   color: var(--accent);
   font-weight: 600;

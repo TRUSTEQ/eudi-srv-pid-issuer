@@ -64,7 +64,8 @@
                handleGenerateTqkEhicOffer(), which still defaults every
                claim itself when none is posted). */-->
         <form method="post" th:action="@{/issuer/tqk/ehic/generate}">
-            <button type="submit" class="tqk-btn tqk-btn--primary tqk-btn--block" th:text="#{tqk-ehic-primary-btn}">Get your card now</button>
+            <button type="submit" class="tqk-btn tqk-btn--primary tqk-btn--block btn-loading-on-submit"
+                    th:attr="data-loading-text=#{tqk-ehic-generating-btn}" th:text="#{tqk-ehic-primary-btn}">Get your card now</button>
         </form>
         <p class="tqk-hero-note" th:text="#{tqk-ehic-left-note}">No real ID is needed for this demo.</p>
     </section>
@@ -94,5 +95,6 @@
 </main>
 <div th:replace="~{fragments/tqk-chrome :: tqkFooter}"></div>
 <script th:src="@{/public/js/identity-verify.js}"></script>
+<script th:src="@{/public/js/form-loading.js}"></script>
 </body>
 </html>
